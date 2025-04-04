@@ -1,0 +1,22 @@
+type Query {
+    listLoans(page: Int, size: Int): [Loan]
+    loanById(id: ID!): [Loan]
+}
+
+type Loan {
+    id: ID!
+    borrower: User
+    amount: Int
+    interest_rate: Float
+    status: String
+}
+
+type User {
+    id: ID!
+    first_name: String
+    last_name: String
+    email: String
+    emailVerified: Boolean
+    password: String
+    passwordToken: String
+}

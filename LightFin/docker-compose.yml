@@ -43,3 +43,15 @@ services:
     environment:
       KAFKA_KAFKA_TOPIC: 'receipt.fiscalize'
       SPRING_KAFKA_BOOTSTRAP_SERVERS: 'broker:9092'
+
+  api-gateway:
+    build: ./gateway
+    container_name: api-gateway
+    depends_on:
+      - broker
+    ports:
+      - "8080:8080"
+    environment:
+      LOANS_KAFKA_TOPIC: 'loan.published'
+      FISCALIZE_KAFKA_TOPIC: 'receipt.fiscalize'
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: 'broker:9092'
