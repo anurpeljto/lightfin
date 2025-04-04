@@ -32,3 +32,14 @@ services:
     environment:
       KAFKA_KAFKA_TOPIC: 'loan.published'
       SPRING_KAFKA_BOOTSTRAP_SERVERS: 'broker:9092'
+
+  fiscalization-listener:
+    build: ./fiscalization-listener
+    container_name: fiscalization-listener
+    depends_on:
+      - broker
+    ports:
+      - "8282:8080"
+    environment:
+      KAFKA_KAFKA_TOPIC: 'receipt.fiscalize'
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: 'broker:9092'
