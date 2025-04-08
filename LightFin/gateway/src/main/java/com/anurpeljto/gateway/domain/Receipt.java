@@ -1,4 +1,4 @@
-package com.anurpeljto.fiscalizationlistener.domain;
+package com.anurpeljto.gateway.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;

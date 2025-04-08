@@ -1,3 +1,15 @@
+networks:
+  fiscalization-network:
+    driver: bridge
+  broker-network:
+    driver: bridge
+  loan-network:
+    driver: bridge
+
+volumes:
+  fiscalization-db-data:
+
+
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper
@@ -5,6 +17,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - broker-network
 
   broker:
     image: confluentinc/cp-kafka
@@ -13,6 +27,8 @@ services:
       - "9092:9092"
     depends_on:
       - zookeeper
+    networks:
+      - broker-network
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
@@ -29,20 +45,41 @@ services:
       - broker
     ports:
       - "8181:8080"
+    networks:
+      - broker-network
+      - loan-network
     environment:
       KAFKA_KAFKA_TOPIC: 'loan.published'
       SPRING_KAFKA_BOOTSTRAP_SERVERS: 'broker:9092'
+
+  fiscalization-db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: fiscalization
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: userpass
+    volumes:
+      - fiscalization-db-data:/var/lib/postgresql/data
+    networks:
+      - fiscalization-network
+      - broker-network
+    ports:
+      - "5432:5432"
 
   fiscalization-listener:
     build: ./fiscalization-listener
     container_name: fiscalization-listener
     depends_on:
       - broker
+      - fiscalization-db
     ports:
       - "8282:8080"
     environment:
       KAFKA_KAFKA_TOPIC: 'receipt.fiscalize'
       SPRING_KAFKA_BOOTSTRAP_SERVERS: 'broker:9092'
+    networks:
+      - fiscalization-network
+      - broker-network
 
   api-gateway:
     build: ./gateway
@@ -51,6 +88,8 @@ services:
       - broker
     ports:
       - "8080:8080"
+    networks:
+      - broker-network
     environment:
       LOANS_KAFKA_TOPIC: 'loan.published'
       FISCALIZE_KAFKA_TOPIC: 'receipt.fiscalize'

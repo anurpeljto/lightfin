@@ -1,10 +1,16 @@
 type Query {
     listLoans(page: Int, size: Int): [Loan]
     loanById(id: ID!): [Loan]
+    listReceipts(page: Int, size: Int): [Receipt]
+}
+
+type Mutation {
+    publishLoan(loan: LoanInput): Loan
+    publishReceipt(receipt: ReceiptInput): Receipt
 }
 
 type Loan {
-    id: ID!
+    id: ID
     borrower: User
     amount: Int
     interest_rate: Float
@@ -12,11 +18,64 @@ type Loan {
 }
 
 type User {
-    id: ID!
+    id: ID
     first_name: String
     last_name: String
     email: String
     emailVerified: Boolean
     password: String
     passwordToken: String
+}
+
+input UserInput {
+    first_name: String!
+    last_name: String!
+    email: String!
+    emailVerified: Boolean
+    password: String
+    passwordToken: String
+}
+
+input LoanInput {
+    borrower: UserInput
+    amount: Int
+    interest_rate: Float
+    status: String
+}
+
+type Item {
+    id: ID
+    name: String
+    unitPrice: Float
+    quantity: Int
+    totalPrice: Float
+    taxAmount: Float
+}
+
+input ItemInput {
+    name: String!
+    unitPrice: Float!
+    quantity: Int!
+    totalPrice: Float
+    taxAmount: Float
+}
+
+
+type Receipt {
+    id: ID
+    total: Float
+    items: [Item]
+    fiscalCode: String
+    signature: String
+    LocalDateTime: String
+    status: String
+}
+
+input ReceiptInput {
+    total: Float
+    items: [ItemInput]
+    fiscalCode: String
+    signature: String
+    LocalDateTime: String
+    status: String
 }
