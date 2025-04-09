@@ -1,7 +1,7 @@
 package com.anurpeljto.gateway.controllers;
 
-import com.anurpeljto.gateway.domain.Loan;
-import com.anurpeljto.gateway.domain.Receipt;
+import com.anurpeljto.gateway.domain.loan.Loan;
+import com.anurpeljto.gateway.domain.fiscalization.Receipt;
 import com.anurpeljto.gateway.exceptions.InvalidReceiptException;
 import com.anurpeljto.gateway.services.FiscalizationService;
 import com.anurpeljto.gateway.services.LoanService;
@@ -11,7 +11,6 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller

@@ -1,5 +1,6 @@
-package com.anurpeljto.gateway.domain;
+package com.anurpeljto.gateway.domain.loan;
 
+import com.anurpeljto.gateway.domain.user.User;
 import com.anurpeljto.gateway.model.LoanStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

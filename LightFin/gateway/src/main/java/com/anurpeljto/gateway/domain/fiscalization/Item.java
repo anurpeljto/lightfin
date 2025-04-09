@@ -1,6 +1,7 @@
-package com.anurpeljto.gateway.domain;
+package com.anurpeljto.gateway.domain.fiscalization;
 
 
+import com.anurpeljto.gateway.domain.fiscalization.Receipt;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,12 +23,15 @@ public class Item {
 
     private String name;
 
+    @Column(name = "unit_price")
     private Double unitPrice;
 
     private int quantity;
 
+    @Column(name = "total_price")
     private double totalPrice;
 
+    @Column(name = "tax_amount")
     private double taxAmount;
 
     @ManyToOne

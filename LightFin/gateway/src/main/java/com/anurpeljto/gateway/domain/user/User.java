@@ -1,4 +1,4 @@
-package com.anurpeljto.gateway.domain;
+package com.anurpeljto.gateway.domain.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

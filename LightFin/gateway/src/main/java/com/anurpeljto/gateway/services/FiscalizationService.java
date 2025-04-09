@@ -1,6 +1,6 @@
 package com.anurpeljto.gateway.services;
 
-import com.anurpeljto.gateway.domain.Receipt;
+import com.anurpeljto.gateway.domain.fiscalization.Receipt;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

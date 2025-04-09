@@ -86,10 +86,12 @@ services:
     container_name: api-gateway
     depends_on:
       - broker
+      - fiscalization-db
     ports:
       - "8080:8080"
     networks:
       - broker-network
+      - fiscalization-network
     environment:
       LOANS_KAFKA_TOPIC: 'loan.published'
       FISCALIZE_KAFKA_TOPIC: 'receipt.fiscalize'

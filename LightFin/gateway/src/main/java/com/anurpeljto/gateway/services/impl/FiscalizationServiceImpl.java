@@ -1,21 +1,19 @@
 package com.anurpeljto.gateway.services.impl;
 
-import com.anurpeljto.gateway.domain.Item;
-import com.anurpeljto.gateway.domain.Receipt;
-import com.anurpeljto.gateway.domain.ReceiptInput;
-import com.anurpeljto.gateway.repositories.ReceiptRepository;
+import com.anurpeljto.gateway.domain.fiscalization.Item;
+import com.anurpeljto.gateway.domain.fiscalization.Receipt;
+import com.anurpeljto.gateway.repositories.receipt.ReceiptRepository;
 import com.anurpeljto.gateway.services.FiscalizationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -27,7 +25,7 @@ public class FiscalizationServiceImpl implements FiscalizationService {
 
     private final ObjectMapper objectMapper;
 
-    public FiscalizationServiceImpl(final ReceiptRepository receiptRepository, final KafkaTemplate kafkaTemplate, final ObjectMapper objectMapper){
+    public FiscalizationServiceImpl(@Qualifier("receiptRepository") final ReceiptRepository receiptRepository, final KafkaTemplate kafkaTemplate, final ObjectMapper objectMapper){
         this.receiptRepository = receiptRepository;
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;

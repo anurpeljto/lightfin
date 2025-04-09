@@ -1,7 +1,7 @@
 package com.anurpeljto.gateway.services.impl;
 
-import com.anurpeljto.gateway.domain.Loan;
-import com.anurpeljto.gateway.repositories.LoanRepository;
+import com.anurpeljto.gateway.domain.loan.Loan;
+import com.anurpeljto.gateway.repositories.loan.LoanRepository;
 import com.anurpeljto.gateway.services.LoanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +14,9 @@ import java.util.Optional;
 @Slf4j
 public class LoanServiceImpl implements LoanService {
 
-    private LoanRepository loanRepository;
+    private final LoanRepository loanRepository;
 
-    public LoanServiceImpl(LoanRepository loanRepository){
+    public LoanServiceImpl(final LoanRepository loanRepository){
         this.loanRepository = loanRepository;
     }
 

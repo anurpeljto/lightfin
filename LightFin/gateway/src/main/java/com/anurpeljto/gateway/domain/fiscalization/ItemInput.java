@@ -1,4 +1,4 @@
-package com.anurpeljto.gateway.domain;
+package com.anurpeljto.gateway.domain.fiscalization;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
