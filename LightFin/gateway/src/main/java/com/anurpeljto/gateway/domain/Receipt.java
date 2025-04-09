@@ -1,5 +1,6 @@
 package com.anurpeljto.gateway.domain;
 
+import com.anurpeljto.gateway.model.PaymentType;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,7 +30,8 @@ public class Receipt {
 
     private double total;
 
-    private String paymentType;
+    @Enumerated(EnumType.STRING)
+    private PaymentType paymentType;
 
     private String fiscalCode;
 

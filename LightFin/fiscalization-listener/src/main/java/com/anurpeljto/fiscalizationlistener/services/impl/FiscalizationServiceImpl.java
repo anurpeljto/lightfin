@@ -4,8 +4,10 @@ import com.anurpeljto.fiscalizationlistener.domain.Item;
 import com.anurpeljto.fiscalizationlistener.domain.Receipt;
 import com.anurpeljto.fiscalizationlistener.repositories.FiscalizationRepository;
 import com.anurpeljto.fiscalizationlistener.services.FiscalizationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -19,31 +21,26 @@ public class FiscalizationServiceImpl implements FiscalizationService {
 
     private final FiscalizationRepository fiscalizationRepository;
 
-    public FiscalizationServiceImpl(FiscalizationRepository fiscalizationRepository){
+    private final ObjectMapper objectMapper;
+
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
+    public FiscalizationServiceImpl(FiscalizationRepository fiscalizationRepository, final ObjectMapper objectMapper, final KafkaTemplate<String, String> kafkaTemplate) {
         this.fiscalizationRepository = fiscalizationRepository;
+        this.objectMapper = objectMapper;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     @Override
-    public void fiscalize(Receipt receipt){
-        OffsetDateTime now = OffsetDateTime.now();
-        receipt.setTimestamp(now);
-
-        String signatureInput = receipt.getItems().toString() + receipt.getTotal() + now.toString();
-        String signature = Hashing.sha256()
-                .hashString(signatureInput, StandardCharsets.UTF_8)
-                .toString();
-        receipt.setSignature(signature);
-
-        String fiscalCode = "MOCK" + Integer.toHexString(signature.hashCode()).toUpperCase();
-        receipt.setFiscalCode(fiscalCode);
-
+    public void sendToFiscalize(Integer id){
+        // I am simulating sending and processing data (which would usually go from the physical cashier to government and then back to the user
+        Receipt receipt = fiscalizationRepository.findById(id).orElseThrow(()->new RuntimeException("receipt not found"));
         receipt.setStatus("FISCALIZED");
-
-        saveToDatabase(receipt);
+        fiscalizationRepository.save(receipt);
     }
 
     @Override
-    public void saveToDatabase(Receipt receipt){
-        this.fiscalizationRepository.save(receipt);
+    public Receipt saveToDatabase(Receipt receipt){
+        return this.fiscalizationRepository.save(receipt);
     }
 }

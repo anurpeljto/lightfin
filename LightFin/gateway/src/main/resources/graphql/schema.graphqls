@@ -69,6 +69,7 @@ type Receipt {
     signature: String
     LocalDateTime: String
     status: String
+    paymentType: String
 }
 
 input ReceiptInput {
@@ -78,4 +79,5 @@ input ReceiptInput {
     signature: String
     LocalDateTime: String
     status: String
+    paymentType: String
 }

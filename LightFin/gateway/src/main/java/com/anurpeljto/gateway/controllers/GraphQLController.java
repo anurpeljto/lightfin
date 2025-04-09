@@ -2,6 +2,7 @@ package com.anurpeljto.gateway.controllers;
 
 import com.anurpeljto.gateway.domain.Loan;
 import com.anurpeljto.gateway.domain.Receipt;
+import com.anurpeljto.gateway.exceptions.InvalidReceiptException;
 import com.anurpeljto.gateway.services.FiscalizationService;
 import com.anurpeljto.gateway.services.LoanService;
 import org.springframework.data.domain.PageRequest;
@@ -52,10 +53,14 @@ public class GraphQLController {
     }
 
     @MutationMapping
-    public void publishReceipt(
+    public Receipt publishReceipt(
             @Argument(name = "receipt") final Receipt receipt
             ){
+        if(receipt == null || receipt.getItems().isEmpty() || receipt.getPaymentType() == null) {
+            throw new InvalidReceiptException("receipt is null or empty");
+        }
         fiscalizationService.publishReceipt(receipt);
+        return receipt;
     }
 
 }

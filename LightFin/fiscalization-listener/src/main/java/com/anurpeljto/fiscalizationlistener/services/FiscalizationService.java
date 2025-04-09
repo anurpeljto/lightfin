@@ -4,7 +4,7 @@ import com.anurpeljto.fiscalizationlistener.domain.Receipt;
 
 public interface FiscalizationService {
 
-    void fiscalize(Receipt receipt);
+    void sendToFiscalize(Integer id);
 
-    void saveToDatabase(Receipt receipt);
+    Receipt saveToDatabase(Receipt receipt);
 }

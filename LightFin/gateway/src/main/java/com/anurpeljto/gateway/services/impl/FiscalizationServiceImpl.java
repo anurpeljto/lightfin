@@ -54,12 +54,10 @@ public class FiscalizationServiceImpl implements FiscalizationService {
 
         String fiscalCode = "MOCK" + Integer.toHexString(signatureInput.hashCode()).toUpperCase();
         receipt.setFiscalCode(fiscalCode);
-
-        receipt.setStatus("FISCALIZED");
-
+        
         try {
             String receiptJson = objectMapper.writeValueAsString(receipt);
-            kafkaTemplate.send("receipt.fiscalize", receiptJson);
+            kafkaTemplate.send("receipt.publish", receiptJson);
         } catch (JsonProcessingException e) {
             log.error("Error serializing receipt: ", e);
         }

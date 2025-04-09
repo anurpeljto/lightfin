@@ -8,6 +8,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -26,15 +29,20 @@ public class FiscalizeListener {
         this.fiscalizationService = fiscalizationService;
     }
 
-    @KafkaListener(topics = "receipt.fiscalize")
-    public void listen(final String in){
+    @KafkaListener(topics = "receipt.publish")
+    public void listen(@Payload final String in){
         try{
             log.info("Received receipt: {}", in);
             final Receipt receipt = objectMapper.readValue(in, Receipt.class);
-            log.info("Items: {}", receipt.getItems());
-            fiscalizationService.saveToDatabase(receipt);
-        } catch (JsonProcessingException ex){
-            throw new RuntimeException(ex);
+                Receipt savedReceipt = fiscalizationService.saveToDatabase(receipt);
+                fiscalizationService.sendToFiscalize(savedReceipt.getId());
+            }
+        catch (JsonProcessingException ex) {
+            log.error("Failed to deserialize message: {}", in, ex);
+            throw new RuntimeException("Failed to process message", ex);
+        } catch (Exception ex) {
+            log.error("Unexpected error while processing message: {}", in, ex);
+            throw new RuntimeException("Unexpected error", ex);
         }
     }
 }
