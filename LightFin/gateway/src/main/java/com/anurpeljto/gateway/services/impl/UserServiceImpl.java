@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -40,7 +42,7 @@ public class UserServiceImpl implements UserService {
             random.nextBytes(randomBytes);
 
             String email_token = baseEncoding.encode(randomBytes);
-            user.setEmail_token(email_token);
+            user.setEmailToken(email_token);
 
             String hashPassword = Hashing.sha256().hashString(user.getPassword(), StandardCharsets.UTF_8).toString();
             user.setPassword(hashPassword);
