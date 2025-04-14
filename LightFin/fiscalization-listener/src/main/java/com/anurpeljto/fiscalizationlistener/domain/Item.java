@@ -28,8 +28,6 @@ public class Item {
 
     private double totalPrice;
 
-    private double taxAmount;
-
     @ManyToOne
     @JoinColumn(name = "receipt_id")
     @JsonBackReference

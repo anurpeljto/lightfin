@@ -1,4 +1,4 @@
-package com.anurpeljto.gateway.domain.user;
+package com.anurpeljto.userlistener.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,10 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
 @Table(name="users")
 public class User {
 
@@ -24,13 +24,11 @@ public class User {
 
     private String email;
 
-    @Column(name="email_verified")
     private Boolean emailVerified;
 
     private String email_token;
 
     private String password;
 
-    @Column(name="password_token")
     private String passwordToken;
 }

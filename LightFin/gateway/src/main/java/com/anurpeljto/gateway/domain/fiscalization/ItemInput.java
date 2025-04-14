@@ -18,6 +18,4 @@ public class ItemInput {
     private Integer quantity;
 
     private Double totalPrice;
-
-    private Double taxAmount;
 }

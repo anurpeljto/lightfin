@@ -24,4 +24,6 @@ public class ReceiptInput {
     private String LocalDateTime;
 
     private String status;
+
+    private Double taxAmount;
 }

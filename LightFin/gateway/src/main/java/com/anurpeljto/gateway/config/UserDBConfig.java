@@ -25,10 +25,10 @@ public class UserDBConfig {
     @Bean(name = "userDataSource")
     public DataSource dataSource() {
         return DataSourceBuilder.create()
-                .url("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1") // H2 in-memory database
-                .driverClassName("org.h2.Driver")
-                .username("sa")
-                .password("")
+                .url("jdbc:postgresql://user-db:5432/user") // H2 in-memory database
+                .driverClassName("org.postgresql.Driver")
+                .username("user")
+                .password("userpass")
                 .build();
     }
 

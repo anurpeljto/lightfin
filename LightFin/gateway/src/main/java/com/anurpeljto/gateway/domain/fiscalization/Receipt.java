@@ -41,4 +41,8 @@ public class Receipt {
     private OffsetDateTime timestamp;
 
     private String status;
+
+    @Column(name = "tax_amount")
+    private Double taxAmount;
+
 }

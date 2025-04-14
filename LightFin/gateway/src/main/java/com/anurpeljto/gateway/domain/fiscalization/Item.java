@@ -31,9 +31,6 @@ public class Item {
     @Column(name = "total_price")
     private double totalPrice;
 
-    @Column(name = "tax_amount")
-    private double taxAmount;
-
     @ManyToOne
     @JoinColumn(name = "receipt_id")
     @JsonBackReference

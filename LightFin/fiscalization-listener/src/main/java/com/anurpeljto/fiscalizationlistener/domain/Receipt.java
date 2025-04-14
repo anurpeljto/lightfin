@@ -38,4 +38,6 @@ public class Receipt {
     private OffsetDateTime timestamp;
 
     private String status;
+
+    private Double taxAmount;
 }

@@ -2,6 +2,7 @@ package com.anurpeljto.gateway.services.impl;
 
 import com.anurpeljto.gateway.domain.fiscalization.Item;
 import com.anurpeljto.gateway.domain.fiscalization.Receipt;
+import com.anurpeljto.gateway.model.FiscalizationStatus;
 import com.anurpeljto.gateway.repositories.receipt.ReceiptRepository;
 import com.anurpeljto.gateway.services.FiscalizationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,6 +37,10 @@ public class FiscalizationServiceImpl implements FiscalizationService {
         OffsetDateTime now = OffsetDateTime.now();
         receipt.setTimestamp(now);
 
+        if(receipt.getStatus() == null){
+            receipt.setStatus(FiscalizationStatus.PENDING.toString());
+        }
+
         for (Item item : receipt.getItems()) {
             item.setReceipt(receipt);
         }
@@ -45,8 +50,7 @@ public class FiscalizationServiceImpl implements FiscalizationService {
             signatureInput.append(item.getName())
                     .append(item.getUnitPrice())
                     .append(item.getQuantity())
-                    .append(item.getTotalPrice())
-                    .append(item.getTaxAmount());
+                    .append(item.getTotalPrice());
         }
         signatureInput.append(receipt.getTotal()).append(now.toString());
 

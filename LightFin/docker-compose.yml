@@ -5,10 +5,12 @@ networks:
     driver: bridge
   loan-network:
     driver: bridge
+  user-network:
+    driver: bridge
 
 volumes:
   fiscalization-db-data:
-
+  user-db-data:
 
 services:
   zookeeper:
@@ -96,3 +98,32 @@ services:
       LOANS_KAFKA_TOPIC: 'loan.published'
       FISCALIZE_KAFKA_TOPIC: 'receipt.fiscalize'
       SPRING_KAFKA_BOOTSTRAP_SERVERS: 'broker:9092'
+
+  user-db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: userpass
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+    networks:
+      - user-network
+      - broker-network
+    ports:
+      - "5433:5432"
+
+  user-listener:
+    build: ./user-listener
+    container_name: user-listener
+    depends_on:
+      - broker
+      - user-db
+    ports:
+      - "8383:8080"
+    environment:
+      KAFKA_KAFKA_TOPIC: 'user.published'
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: 'broker:9092'
+    networks:
+      - user-network
+      - broker-network

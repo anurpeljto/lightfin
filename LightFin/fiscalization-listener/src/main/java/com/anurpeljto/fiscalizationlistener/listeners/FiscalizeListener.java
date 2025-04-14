@@ -34,8 +34,11 @@ public class FiscalizeListener {
         try{
             log.info("Received receipt: {}", in);
             final Receipt receipt = objectMapper.readValue(in, Receipt.class);
-                Receipt savedReceipt = fiscalizationService.saveToDatabase(receipt);
-                fiscalizationService.sendToFiscalize(savedReceipt.getId());
+            receipt.setTotal(
+                    receipt.getItems().stream()
+                            .mapToDouble(item -> item.getUnitPrice() * item.getQuantity()).sum() * receipt.getTaxAmount());
+            Receipt savedReceipt = fiscalizationService.saveToDatabase(receipt);
+            fiscalizationService.sendToFiscalize(savedReceipt.getId());
             }
         catch (JsonProcessingException ex) {
             log.error("Failed to deserialize message: {}", in, ex);
