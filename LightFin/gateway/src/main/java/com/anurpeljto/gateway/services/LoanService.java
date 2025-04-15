@@ -11,4 +11,10 @@ public interface LoanService {
     List<Loan> getLoans(Pageable pageable);
 
     Optional<Loan> getLoanById(Integer id);
+
+    void approveLoan(Loan loan);
+
+    void rejectLoan(Loan loan);
+
+    void publishLoan(Loan loan);
 }

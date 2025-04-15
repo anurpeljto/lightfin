@@ -25,7 +25,7 @@ public class UserDBConfig {
     @Bean(name = "userDataSource")
     public DataSource dataSource() {
         return DataSourceBuilder.create()
-                .url("jdbc:postgresql://user-db:5432/user") // H2 in-memory database
+                .url("jdbc:postgresql://user-db:5432/users")
                 .driverClassName("org.postgresql.Driver")
                 .username("user")
                 .password("userpass")

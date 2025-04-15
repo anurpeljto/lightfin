@@ -30,17 +30,22 @@ public class LoanDBConfig {
        return new DataSourceProperties();
    }
 
-   @Bean
-    public DataSource loanDataSource() {
-       return loanDataSourceProperties().initializeDataSourceBuilder().build();
-   }
+    @Bean(name = "loanDataSource")
+    public DataSource dataSource() {
+        return DataSourceBuilder.create()
+                .url("jdbc:postgresql://loan-db:5432/loans")
+                .driverClassName("org.postgresql.Driver")
+                .username("user")
+                .password("userpass")
+                .build();
+    }
 
    @Bean(name = "secondEntityManagerFactory")
    public LocalContainerEntityManagerFactoryBean secondEntityManagerFactory(
            @Qualifier("loanDataSource") DataSource dataSource) {
            LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
            factoryBean.setDataSource(dataSource);
-           factoryBean.setPackagesToScan("com.anurpeljto.gateway.domain.loan", "com.anurpeljto.gateway.domain.user");
+           factoryBean.setPackagesToScan("com.anurpeljto.gateway.domain.loan");
            HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
            factoryBean.setJpaVendorAdapter(vendorAdapter);
 

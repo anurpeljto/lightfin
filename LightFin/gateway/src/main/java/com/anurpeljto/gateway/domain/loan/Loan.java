@@ -20,15 +20,14 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name="borrower_id")
-    private User borrower;
+    @Column(name = "borrower_id")
+    private Integer borrowerId;
 
     private Double amount;
 
-    private Double interest_rate;
+    @Column(name = "interest_rate")
+    private Double interestRate;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private LoanStatus status;
 }

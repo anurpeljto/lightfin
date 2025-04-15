@@ -7,16 +7,19 @@ type Query {
 
 type Mutation {
     publishLoan(loan: LoanInput): Loan
+    approveLoan(id: ID): Loan
+    rejectLoan(id: ID): Loan
+
     publishReceipt(receipt: ReceiptInput): Receipt
     publishUser(user: UserInput): User
 }
 
 type Loan {
     id: ID
-    borrower: User
-    amount: Int
-    interest_rate: Float
-    status: String
+    borrowerId: Int!
+    amount: Int!
+    interestRate: Float!
+    status: LoanStatus!
 }
 
 type User {
@@ -41,10 +44,9 @@ input UserInput {
 }
 
 input LoanInput {
-    borrower: UserInput
-    amount: Int
-    interest_rate: Float
-    status: String
+    borrowerId: Int!
+    amount: Int!
+    interestRate: Float!
 }
 
 type Item {
@@ -84,4 +86,11 @@ input ReceiptInput {
     status: String
     paymentType: String
     taxAmount: Float!
+}
+
+enum LoanStatus {
+    PENDING,
+    REJECTED,
+    APPROVED,
+    ISSUED
 }

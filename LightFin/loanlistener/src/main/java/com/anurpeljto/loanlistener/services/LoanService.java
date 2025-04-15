@@ -9,4 +9,8 @@ public interface LoanService {
     void deleteLoan(Loan loan);
 
     Loan updateLoan(Loan loan);
+
+    void approveLoan(Loan loan);
+
+    void rejectLoan(Loan loan);
 }

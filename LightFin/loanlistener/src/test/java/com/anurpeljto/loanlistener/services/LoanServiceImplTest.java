@@ -53,9 +53,9 @@ public class LoanServiceImplTest {
     public void testThatUpdateUpdatesWhenLoanPresent() {
         final Loan testLoan = TestData.getTestLoan();
         final Loan newLoan = TestData.getTestLoan();
-        newLoan.setAmount(300.00);
-        newLoan.setStatus(LoanStatus.CANCELLED);
-        newLoan.setInterest_rate(0.1);
+        newLoan.setAmount(Double.valueOf(300.00));
+        newLoan.setStatus(LoanStatus.REJECTED);
+        newLoan.setInterestRate(Double.valueOf(0.10));
 
         when(loanRepository.findById(eq(testLoan.getId()))).thenReturn(Optional.of(testLoan));
         when(loanRepository.save(eq(testLoan))).thenReturn(newLoan);
@@ -66,8 +66,8 @@ public class LoanServiceImplTest {
         assertEquals(result.getId(), newLoan.getId());
         assertEquals(newLoan.getAmount(), result.getAmount());
         assertEquals(newLoan.getStatus(), result.getStatus());
-        assertEquals(newLoan.getBorrower(), result.getBorrower());
-        assertEquals(newLoan.getInterest_rate(), result.getInterest_rate());
+        assertEquals(newLoan.getBorrowerId(), result.getBorrowerId());
+        assertEquals(newLoan.getInterestRate(), result.getInterestRate());
 
         verify(loanRepository).save(eq(testLoan));
     }

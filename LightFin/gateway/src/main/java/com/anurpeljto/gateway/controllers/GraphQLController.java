@@ -2,8 +2,10 @@ package com.anurpeljto.gateway.controllers;
 
 import com.anurpeljto.gateway.domain.loan.Loan;
 import com.anurpeljto.gateway.domain.fiscalization.Receipt;
+import com.anurpeljto.gateway.domain.loan.LoanInput;
 import com.anurpeljto.gateway.domain.user.User;
 import com.anurpeljto.gateway.exceptions.InvalidReceiptException;
+import com.anurpeljto.gateway.model.LoanStatus;
 import com.anurpeljto.gateway.services.FiscalizationService;
 import com.anurpeljto.gateway.services.LoanService;
 import com.anurpeljto.gateway.services.UserService;
@@ -30,6 +32,8 @@ public class GraphQLController {
         this.userService = userService;
     }
 
+//    Loans and loan related methods
+
     @QueryMapping
     public Iterable<Loan> listLoans(
             @Argument("page") final Integer page,
@@ -42,6 +46,44 @@ public class GraphQLController {
                     )
             );
     }
+
+    @MutationMapping
+    public Loan publishLoan(
+            @Argument(name = "loan") LoanInput loan) {
+        if(loan == null || loan.getBorrowerId() == null || loan.getAmount() == null || loan.getInterestRate() == null) {
+            throw new InvalidReceiptException("loan is null or empty");
+        }
+
+        Loan newLoan = Loan.builder()
+                        .amount(loan.getAmount())
+                        .interestRate(loan.getInterestRate())
+                        .borrowerId(loan.getBorrowerId())
+                        .status(LoanStatus.PENDING)
+                        .build();
+
+        loanService.publishLoan(newLoan);
+        return newLoan;
+    }
+
+    @MutationMapping
+    public Loan approveLoan(
+            @Argument(name = "id") final Integer id
+    ){
+        Loan loan = loanService.getLoanById(id).get();
+        loanService.approveLoan(loan);
+        return loan;
+    }
+
+    @MutationMapping
+    public Loan rejectLoan(
+            @Argument(name = "id") final Integer id
+    ){
+        Loan loan = loanService.getLoanById(id).get();
+        loanService.rejectLoan(loan);
+        return loan;
+    }
+
+//    Receipts and receipt related methods
 
     @QueryMapping
     public Iterable<Receipt> listReceipts(
@@ -66,6 +108,8 @@ public class GraphQLController {
         fiscalizationService.publishReceipt(receipt);
         return receipt;
     }
+
+//    Users and user related methods
 
     @MutationMapping
     public User publishUser(
