@@ -34,6 +34,7 @@ type User {
 }
 
 input UserInput {
+    id: ID
     first_name: String!
     last_name: String!
     email: String!
@@ -44,6 +45,7 @@ input UserInput {
 }
 
 input LoanInput {
+    id: ID
     borrowerId: Int!
     amount: Int!
     interestRate: Float!
@@ -58,6 +60,7 @@ type Item {
 }
 
 input ItemInput {
+    id: ID
     name: String!
     unitPrice: Float!
     quantity: Int!
@@ -78,6 +81,7 @@ type Receipt {
 }
 
 input ReceiptInput {
+    id: ID
     total: Float
     items: [ItemInput]
     fiscalCode: String

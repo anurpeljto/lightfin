@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ReceiptInput {
 
-    private Double total;
+    private double total;
 
     private List<ItemInput> items;
 

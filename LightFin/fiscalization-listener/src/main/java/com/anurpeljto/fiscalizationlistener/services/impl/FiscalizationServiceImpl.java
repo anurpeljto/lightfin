@@ -41,6 +41,7 @@ public class FiscalizationServiceImpl implements FiscalizationService {
 
     @Override
     public Receipt saveToDatabase(Receipt receipt){
+        log.info("Received receipt {}", receipt);
         return this.fiscalizationRepository.save(receipt);
     }
 }

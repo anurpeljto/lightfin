@@ -46,13 +46,17 @@ public class FiscalizationServiceImpl implements FiscalizationService {
         }
 
         StringBuilder signatureInput = new StringBuilder();
+        double total = 0.00;
         for (Item item : receipt.getItems()) {
+            item.setTotalPrice(item.getQuantity() * item.getUnitPrice());
+            total+=item.getTotalPrice();
+
             signatureInput.append(item.getName())
                     .append(item.getUnitPrice())
-                    .append(item.getQuantity())
-                    .append(item.getTotalPrice());
+                    .append(item.getQuantity());
         }
         signatureInput.append(receipt.getTotal()).append(now.toString());
+        receipt.setTotal(total + (total * receipt.getTaxAmount()));
 
         String fiscalCode = "MOCK" + Integer.toHexString(signatureInput.hashCode()).toUpperCase();
         receipt.setFiscalCode(fiscalCode);

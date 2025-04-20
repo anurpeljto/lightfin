@@ -34,9 +34,6 @@ public class FiscalizeListener {
         try{
             log.info("Received receipt: {}", in);
             final Receipt receipt = objectMapper.readValue(in, Receipt.class);
-            receipt.setTotal(
-                    receipt.getItems().stream()
-                            .mapToDouble(item -> item.getUnitPrice() * item.getQuantity()).sum() * receipt.getTaxAmount());
             Receipt savedReceipt = fiscalizationService.saveToDatabase(receipt);
             fiscalizationService.sendToFiscalize(savedReceipt.getId());
             }
