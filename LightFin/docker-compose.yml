@@ -7,11 +7,14 @@ networks:
     driver: bridge
   user-network:
     driver: bridge
+  subsidy-network:
+    driver: bridge
 
 volumes:
   fiscalization-db-data:
   user-db-data:
   loan-db-data:
+  subsidy-db-data:
 
 services:
   zookeeper:
@@ -146,3 +149,32 @@ services:
       - broker-network
     ports:
       - "5434:5432"
+
+  subsidy-listener:
+    build: ./subsidy-listener
+    container_name: subsidy-listener
+    depends_on:
+      - broker
+      - subsidy-db
+    ports:
+      - "8484:8080"
+    environment:
+      KAFKA_KAFKA_TOPIC: 'subsidy.published'
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: 'broker:9092'
+    networks:
+      - subsidy-network
+      - broker-network
+
+  subsidy-db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: subsidies
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: userpass
+    volumes:
+      - subsidy-db-data:/var/lib/postgresql/data
+    networks:
+      - subsidy-network
+      - broker-network
+    ports:
+      - "5435:5432"

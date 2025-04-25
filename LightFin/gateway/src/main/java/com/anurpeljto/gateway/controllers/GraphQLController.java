@@ -3,12 +3,17 @@ package com.anurpeljto.gateway.controllers;
 import com.anurpeljto.gateway.domain.loan.Loan;
 import com.anurpeljto.gateway.domain.fiscalization.Receipt;
 import com.anurpeljto.gateway.domain.loan.LoanInput;
+import com.anurpeljto.gateway.domain.subsidy.Subsidy;
+import com.anurpeljto.gateway.domain.subsidy.SubsidyInput;
 import com.anurpeljto.gateway.domain.user.User;
 import com.anurpeljto.gateway.exceptions.InvalidReceiptException;
 import com.anurpeljto.gateway.model.LoanStatus;
+import com.anurpeljto.gateway.model.SubsidyStatus;
 import com.anurpeljto.gateway.services.FiscalizationService;
 import com.anurpeljto.gateway.services.LoanService;
+import com.anurpeljto.gateway.services.SubsidyService;
 import com.anurpeljto.gateway.services.UserService;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -26,10 +31,13 @@ public class GraphQLController {
 
     private final UserService userService;
 
-    public GraphQLController(final LoanService loanS, final FiscalizationService fiscalizationService, final UserService userService) {
+    private final SubsidyService subsidyService;
+
+    public GraphQLController(final LoanService loanS, final FiscalizationService fiscalizationService, final UserService userService, final SubsidyService subsidyService) {
         this.loanService = loanS;
         this.fiscalizationService = fiscalizationService;
         this.userService = userService;
+        this.subsidyService = subsidyService;
     }
 
 //    Loans and loan related methods
@@ -133,6 +141,52 @@ public class GraphQLController {
                         Optional.ofNullable(size).orElse(10)
                 )
         );
+    }
+
+    @QueryMapping
+    public Iterable<Subsidy> listSubsidies(
+            @Argument("page") final Integer page,
+            @Argument("size") final Integer size
+    ) {
+        return subsidyService.listSubsidies(
+                PageRequest.of(
+                        Optional.ofNullable(page).orElse(0),
+                        Optional.ofNullable(size).orElse(10)
+                )
+        );
+    }
+
+    @MutationMapping
+    public Subsidy publishSubsidy(
+            @Argument(name = "subsidy") final SubsidyInput subsidyInput
+    ){
+        Subsidy subsidy = Subsidy.builder()
+                .grant(subsidyInput.getGrant())
+                .amount(subsidyInput.getAmount())
+                .recipientId(subsidyInput.getRecipientId())
+                .status(SubsidyStatus.PENDING)
+                .build();
+
+        subsidyService.publishSubsidy(subsidy);
+        return subsidy;
+    }
+
+    @MutationMapping
+    public Subsidy approveSubsidy(
+            @Argument(name = "id") final Integer id
+    ) {
+        Subsidy subsidy = subsidyService.getSubsidyById(id).orElseThrow(() -> new ResourceNotFoundException("Subsidy does not exist"));
+        subsidyService.approveSubsidy(id);
+        return subsidy;
+    }
+
+    @MutationMapping
+    public Subsidy rejectSubsidy(
+            @Argument(name = "id") final Integer id
+    ) {
+        Subsidy subsidy = subsidyService.getSubsidyById(id).orElseThrow(() -> new ResourceNotFoundException("Subsidy does not exist"));
+        subsidyService.rejectSubsidy(id);
+        return subsidy;
     }
 
 }

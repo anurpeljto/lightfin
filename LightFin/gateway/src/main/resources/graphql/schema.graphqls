@@ -3,6 +3,7 @@ type Query {
     loanById(id: ID!): [Loan]
     listReceipts(page: Int, size: Int): [Receipt]
     listUsers(page: Int, size: Int): [User]
+    listSubsidies(page: Int, size: Int): [Subsidy]
 }
 
 type Mutation {
@@ -12,6 +13,10 @@ type Mutation {
 
     publishReceipt(receipt: ReceiptInput): Receipt
     publishUser(user: UserInput): User
+
+    publishSubsidy(subsidy: SubsidyInput): Subsidy
+    approveSubsidy(id: Int): Subsidy
+    rejectSubsidy(id: Int): Subsidy
 }
 
 type Loan {
@@ -92,9 +97,44 @@ input ReceiptInput {
     taxAmount: Float!
 }
 
+type SubsidyGrant {
+    id: ID
+    name: String!
+    grantingAuthority: String!
+    description: String
+}
+
+input SubsidyGrantInput {
+    name: String!
+    grantingAuthority: String!
+    description: String
+}
+
+type Subsidy {
+    id: ID
+    grant: SubsidyGrant!
+    recipientId: Int
+    amount: Float!
+    approvalDate: String
+    validUntil: String
+    status: SubsidyStatus
+}
+
+input SubsidyInput {
+    grant: SubsidyGrantInput!
+    recipientId: Int!
+    amount: Float!
+}
+
 enum LoanStatus {
     PENDING,
     REJECTED,
     APPROVED,
     ISSUED
+}
+
+enum SubsidyStatus {
+    PENDING
+    APPROVED
+    REJECTED
 }
