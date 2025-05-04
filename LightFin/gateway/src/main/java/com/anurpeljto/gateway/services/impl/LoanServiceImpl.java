@@ -1,15 +1,19 @@
 package com.anurpeljto.gateway.services.impl;
 
 import com.anurpeljto.gateway.domain.loan.Loan;
-import com.anurpeljto.gateway.repositories.loan.LoanRepository;
 import com.anurpeljto.gateway.services.LoanService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,26 +21,23 @@ import java.util.Optional;
 @Slf4j
 public class LoanServiceImpl implements LoanService {
 
-    private final LoanRepository loanRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
+    private final RestTemplate restTemplate;
 
-    public LoanServiceImpl(final LoanRepository loanRepository, KafkaTemplate<String, String> kafkaTemplate, final ObjectMapper objectMapper) {
-        this.loanRepository = loanRepository;
+    @Value("${spring.loans.url}")
+    private String loanServiceUrl;
+
+    public LoanServiceImpl(KafkaTemplate<String, String> kafkaTemplate, final ObjectMapper objectMapper, final RestTemplate restTemplate) {
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;
-    }
-
-    @Override
-    public List<Loan> getLoans(final Pageable pageable){
-        log.info("Paging loans...");
-        return loanRepository.findAll();
+        this.restTemplate = restTemplate;
     }
 
     @Override
     public Optional<Loan> getLoanById(Integer id){
-        log.info("Querying for loan with id {}", id);
-        return loanRepository.findById(id);
+        ResponseEntity<Loan> response = restTemplate.getForEntity(loanServiceUrl + "/loan/" + id, Loan.class);
+        return Optional.ofNullable(response.getBody());
     }
 
     @Override

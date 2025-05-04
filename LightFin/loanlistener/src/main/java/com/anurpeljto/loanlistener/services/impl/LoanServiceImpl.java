@@ -4,8 +4,10 @@ import com.anurpeljto.loanlistener.domain.Loan;
 import com.anurpeljto.loanlistener.model.LoanStatus;
 import com.anurpeljto.loanlistener.repositories.LoanRepository;
 import com.anurpeljto.loanlistener.services.LoanService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -65,5 +67,10 @@ public class LoanServiceImpl implements LoanService {
         Loan existingLoan = existingLoanOpt.get();
         existingLoan.setStatus(LoanStatus.REJECTED);
         loanRepository.save(existingLoan);
+    }
+
+    @Override
+    public List<Loan> getLoans(Pageable pageable) {
+        return this.loanRepository.findAll(pageable).getContent();
     }
 }

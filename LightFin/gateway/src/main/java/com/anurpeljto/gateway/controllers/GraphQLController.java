@@ -14,12 +14,16 @@ import com.anurpeljto.gateway.services.LoanService;
 import com.anurpeljto.gateway.services.SubsidyService;
 import com.anurpeljto.gateway.services.UserService;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -33,26 +37,30 @@ public class GraphQLController {
 
     private final SubsidyService subsidyService;
 
-    public GraphQLController(final LoanService loanS, final FiscalizationService fiscalizationService, final UserService userService, final SubsidyService subsidyService) {
+    private final RestTemplate restTemplate;
+
+    @Value("${spring.loans.url}")
+    private String loanServiceUrl;
+
+    public GraphQLController(final LoanService loanS, final FiscalizationService fiscalizationService, final UserService userService, final SubsidyService subsidyService, final RestTemplate restTemplate) {
         this.loanService = loanS;
         this.fiscalizationService = fiscalizationService;
         this.userService = userService;
         this.subsidyService = subsidyService;
+        this.restTemplate = restTemplate;
     }
 
 //    Loans and loan related methods
 
     @QueryMapping
-    public Iterable<Loan> listLoans(
+    public List<Loan> listLoans(
             @Argument("page") final Integer page,
             @Argument("size") final Integer size) {
 
-            return loanService.getLoans(
-                    PageRequest.of(
-                            Optional.ofNullable(page).orElse(0),
-                            Optional.ofNullable(size).orElse(10)
-                    )
-            );
+        String requestUrl = String.format("%s/list?page=%d&size=%d", loanServiceUrl, page, size);
+        ResponseEntity<List> response = restTemplate.getForEntity(requestUrl, List.class);
+
+        return response.getBody();
     }
 
     @MutationMapping
