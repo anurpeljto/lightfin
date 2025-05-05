@@ -1,11 +1,15 @@
 package com.anurpeljto.loanlistener.services.impl;
 
 import com.anurpeljto.loanlistener.domain.Loan;
+import com.anurpeljto.loanlistener.exceptions.LoanNotFound;
 import com.anurpeljto.loanlistener.model.LoanStatus;
 import com.anurpeljto.loanlistener.repositories.LoanRepository;
 import com.anurpeljto.loanlistener.services.LoanService;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -72,5 +76,11 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public List<Loan> getLoans(Pageable pageable) {
         return this.loanRepository.findAll(pageable).getContent();
+    }
+
+    @Override
+    public Loan getLoanById(Integer id){
+        return loanRepository.findById(id)
+                .orElseThrow(() -> new LoanNotFound("Loan not found with ID: " + id));
     }
 }

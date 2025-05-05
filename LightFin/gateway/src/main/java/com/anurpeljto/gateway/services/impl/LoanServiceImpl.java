@@ -11,6 +11,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.swing.text.html.Option;
@@ -35,9 +36,13 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public Optional<Loan> getLoanById(Integer id){
-        ResponseEntity<Loan> response = restTemplate.getForEntity(loanServiceUrl + "/loan/" + id, Loan.class);
-        return Optional.ofNullable(response.getBody());
+    public Loan getLoanById(Integer id){
+        try{
+            ResponseEntity<Loan> response = restTemplate.getForEntity(loanServiceUrl + "/loan/" + id, Loan.class);
+            return Optional.of(response.getBody()).orElse(null);
+        } catch(HttpServerErrorException.InternalServerError e){
+            return null;
+        }
     }
 
     @Override

@@ -1,10 +1,12 @@
 package com.anurpeljto.loanlistener.controllers;
 
 import com.anurpeljto.loanlistener.domain.Loan;
+import com.anurpeljto.loanlistener.exceptions.LoanNotFound;
 import com.anurpeljto.loanlistener.services.LoanService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,5 +33,13 @@ public class LoanController {
                         Optional.ofNullable(size).orElse(10)
                 )
         );
+    }
+
+    @GetMapping(path = "/loan/{id}")
+    public Loan getLoan(
+            @PathVariable final Integer id
+    ){
+        Loan loan = this.loanService.getLoanById(id);
+        return loan;
     }
 }

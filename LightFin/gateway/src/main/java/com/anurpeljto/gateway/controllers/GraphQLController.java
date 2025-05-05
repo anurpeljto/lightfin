@@ -63,6 +63,13 @@ public class GraphQLController {
         return response.getBody();
     }
 
+    @QueryMapping
+    public Loan getLoanById(
+            @Argument("id") final Integer id
+    ){
+        return loanService.getLoanById(id);
+    }
+
     @MutationMapping
     public Loan publishLoan(
             @Argument(name = "loan") LoanInput loan) {
@@ -85,7 +92,7 @@ public class GraphQLController {
     public Loan approveLoan(
             @Argument(name = "id") final Integer id
     ){
-        Loan loan = loanService.getLoanById(id).get();
+        Loan loan = loanService.getLoanById(id);
         loanService.approveLoan(loan);
         return loan;
     }
@@ -94,7 +101,7 @@ public class GraphQLController {
     public Loan rejectLoan(
             @Argument(name = "id") final Integer id
     ){
-        Loan loan = loanService.getLoanById(id).get();
+        Loan loan = loanService.getLoanById(id);
         loanService.rejectLoan(loan);
         return loan;
     }

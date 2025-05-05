@@ -1,6 +1,6 @@
 type Query {
     listLoans(page: Int, size: Int): [Loan]
-    loanById(id: ID!): [Loan]
+    getLoanById(id: ID!): Loan
     listReceipts(page: Int, size: Int): [Receipt]
     listUsers(page: Int, size: Int): [User]
     listSubsidies(page: Int, size: Int): [Subsidy]

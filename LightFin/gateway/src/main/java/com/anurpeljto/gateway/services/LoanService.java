@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface LoanService {
 
-    Optional<Loan> getLoanById(Integer id);
+    Loan getLoanById(Integer id);
 
     void approveLoan(Loan loan);
 
