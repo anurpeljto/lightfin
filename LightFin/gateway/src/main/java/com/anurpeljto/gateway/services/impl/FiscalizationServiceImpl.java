@@ -2,34 +2,42 @@ package com.anurpeljto.gateway.services.impl;
 
 import com.anurpeljto.gateway.domain.fiscalization.Item;
 import com.anurpeljto.gateway.domain.fiscalization.Receipt;
+import com.anurpeljto.gateway.domain.loan.Loan;
 import com.anurpeljto.gateway.model.FiscalizationStatus;
-import com.anurpeljto.gateway.repositories.receipt.ReceiptRepository;
 import com.anurpeljto.gateway.services.FiscalizationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
 public class FiscalizationServiceImpl implements FiscalizationService {
 
-    private final ReceiptRepository receiptRepository;
-
     private final KafkaTemplate kafkaTemplate;
 
     private final ObjectMapper objectMapper;
 
-    public FiscalizationServiceImpl(@Qualifier("receiptRepository") final ReceiptRepository receiptRepository, final KafkaTemplate kafkaTemplate, final ObjectMapper objectMapper){
-        this.receiptRepository = receiptRepository;
+    private final RestTemplate restTemplate;
+
+    @Value("${spring.fiscalization.url}")
+    private String fiscalizationUrl;
+
+    public FiscalizationServiceImpl(final KafkaTemplate kafkaTemplate, final ObjectMapper objectMapper, final RestTemplate restTemplate) {
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -70,8 +78,24 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public List<Receipt> listReceipts(Pageable pageable){
-        log.info("Paging loans...");
-        return receiptRepository.findAll(pageable).getContent();
+    public List<Receipt> listReceipts(Integer page, Integer size) {
+        try{
+            String requestUrl = String.format("%s/list?page=%d&size=%d", fiscalizationUrl, page, size);
+            ResponseEntity<List> response = restTemplate.getForEntity(requestUrl, List.class);
+            return response.getBody();
+        } catch(HttpServerErrorException.InternalServerError e){
+            return null;
+        }
+    }
+
+    @Override
+    public Receipt getReceiptById(Integer id) {
+        try{
+            String requestUrl = String.format("%s/receipt/%s", fiscalizationUrl, id);
+            ResponseEntity<Receipt> response = restTemplate.getForEntity(requestUrl, Receipt.class);
+            return response.getBody();
+        } catch(HttpServerErrorException.InternalServerError e){
+            return null;
+        }
     }
 }

@@ -112,13 +112,14 @@ public class GraphQLController {
     public Iterable<Receipt> listReceipts(
             @Argument("page") final Integer page,
             @Argument("size") final Integer size) {
+        return this.fiscalizationService.listReceipts(page, size);
+    }
 
-        return fiscalizationService.listReceipts(
-                PageRequest.of(
-                        Optional.ofNullable(page).orElse(0),
-                        Optional.ofNullable(size).orElse(10)
-                )
-        );
+    @QueryMapping
+    public Receipt getReceiptById(
+            @Argument("id") final Integer id
+    ) {
+        return this.fiscalizationService.getReceiptById(id);
     }
 
     @MutationMapping

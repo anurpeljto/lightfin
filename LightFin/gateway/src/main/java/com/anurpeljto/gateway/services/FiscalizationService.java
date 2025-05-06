@@ -9,5 +9,7 @@ public interface FiscalizationService {
 
     void publishReceipt(Receipt receipt);
 
-    List<Receipt> listReceipts(Pageable pageable);
+    List<Receipt> listReceipts(Integer page, Integer size);
+
+    Receipt getReceiptById(Integer id);
 }
