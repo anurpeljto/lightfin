@@ -106,6 +106,7 @@ services:
       LOANS_KAFKA_TOPIC: 'loan.published'
       LOANS_MICROSERVICE_URL: 'http://loan-listener:8080'
       FISCALIZATION_MICROSERVICE_URL: 'http://fiscalization-listener:8080'
+      SUBSIDY_MICROSERVICE_URL: 'http://subsidy-listener:8080'
       FISCALIZE_KAFKA_TOPIC: 'receipt.fiscalize'
       SPRING_KAFKA_BOOTSTRAP_SERVERS: 'broker:9092'
   user-db:

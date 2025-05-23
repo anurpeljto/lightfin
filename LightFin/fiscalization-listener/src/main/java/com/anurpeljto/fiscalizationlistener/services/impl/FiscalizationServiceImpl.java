@@ -2,6 +2,7 @@ package com.anurpeljto.fiscalizationlistener.services.impl;
 
 import com.anurpeljto.fiscalizationlistener.domain.Item;
 import com.anurpeljto.fiscalizationlistener.domain.Receipt;
+import com.anurpeljto.fiscalizationlistener.dto.ReceiptResponseDTO;
 import com.anurpeljto.fiscalizationlistener.repositories.FiscalizationRepository;
 import com.anurpeljto.fiscalizationlistener.services.FiscalizationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +13,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -55,5 +57,13 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     @Override
     public Receipt getReceipt(Integer id){
         return this.fiscalizationRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public ReceiptResponseDTO fiscalizedReceiptsThisWeek() {
+        OffsetDateTime today = OffsetDateTime.now();
+        OffsetDateTime startOfWeek = today.minusDays(7);
+        List<Receipt> receipts = this.fiscalizationRepository.findFiscalizedByThisWeek(startOfWeek, today);
+        return new ReceiptResponseDTO(receipts);
     }
 }

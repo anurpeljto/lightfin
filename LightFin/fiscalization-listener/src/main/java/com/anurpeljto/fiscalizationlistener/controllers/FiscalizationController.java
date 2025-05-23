@@ -1,6 +1,7 @@
 package com.anurpeljto.fiscalizationlistener.controllers;
 
 import com.anurpeljto.fiscalizationlistener.domain.Receipt;
+import com.anurpeljto.fiscalizationlistener.dto.ReceiptResponseDTO;
 import com.anurpeljto.fiscalizationlistener.services.FiscalizationService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,5 +39,10 @@ public class FiscalizationController {
             @PathVariable final Integer id
     ){
         return this.fiscalizationService.getReceipt(id);
+    }
+
+    @GetMapping(path = "/fiscalized/week")
+    public ReceiptResponseDTO getFiscalizedWeekReceipts(){
+        return this.fiscalizationService.fiscalizedReceiptsThisWeek();
     }
 }

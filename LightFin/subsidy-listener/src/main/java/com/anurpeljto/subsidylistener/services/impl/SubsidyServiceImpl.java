@@ -1,6 +1,7 @@
 package com.anurpeljto.subsidylistener.services.impl;
 
 import com.anurpeljto.subsidylistener.domain.Subsidy;
+import com.anurpeljto.subsidylistener.exceptions.SubsidyMissingException;
 import com.anurpeljto.subsidylistener.model.SubsidyStatus;
 import com.anurpeljto.subsidylistener.repositories.SubsidyRepository;
 import com.anurpeljto.subsidylistener.services.SubsidyService;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -69,5 +71,15 @@ public class SubsidyServiceImpl implements SubsidyService {
 
         subsidy.setStatus(SubsidyStatus.REJECTED);
         subsidyRepository.save(subsidy);
+    }
+
+    @Override
+    public List<Subsidy> getSubsidies() {
+        return subsidyRepository.findAll();
+    }
+
+    @Override
+    public Subsidy getSubsidyById(Integer id) {
+        return subsidyRepository.findById(id).orElseThrow(() -> new SubsidyMissingException());
     }
 }

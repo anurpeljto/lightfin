@@ -4,9 +4,12 @@ type Query {
 
     listReceipts(page: Int, size: Int): [Receipt]
     getReceiptById(id: ID!): Receipt
+    getFiscalizedThisWeek: ReceiptResponse
 
     listUsers(page: Int, size: Int): [User]
+
     listSubsidies(page: Int, size: Int): [Subsidy]
+    getSubsidyById(id: ID!): Subsidy
 }
 
 type Mutation {
@@ -82,7 +85,7 @@ type Receipt {
     items: [Item]
     fiscalCode: String
     signature: String
-    LocalDateTime: String
+    timestamp: String
     status: String
     paymentType: String
     taxAmount: Float!
@@ -140,4 +143,9 @@ enum SubsidyStatus {
     PENDING
     APPROVED
     REJECTED
+}
+
+type ReceiptResponse {
+    data: [Receipt]
+    count: Int
 }

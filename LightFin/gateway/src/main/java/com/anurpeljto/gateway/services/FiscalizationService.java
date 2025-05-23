@@ -1,6 +1,7 @@
 package com.anurpeljto.gateway.services;
 
 import com.anurpeljto.gateway.domain.fiscalization.Receipt;
+import com.anurpeljto.gateway.dto.ReceiptResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface FiscalizationService {
     List<Receipt> listReceipts(Integer page, Integer size);
 
     Receipt getReceiptById(Integer id);
+
+    ReceiptResponse getFiscalizedThisWeek();
 }

@@ -1,15 +1,19 @@
 package com.anurpeljto.gateway.services.impl;
 
+import com.anurpeljto.gateway.domain.fiscalization.Receipt;
 import com.anurpeljto.gateway.domain.loan.Loan;
 import com.anurpeljto.gateway.domain.subsidy.Subsidy;
 import com.anurpeljto.gateway.domain.subsidy.SubsidyGrant;
-import com.anurpeljto.gateway.repositories.subsidies.SubsidyRepository;
 import com.anurpeljto.gateway.services.SubsidyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,19 +23,27 @@ public class SubsidyServiceImpl implements SubsidyService {
 
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    private SubsidyRepository subsidyRepository;
-
     private final ObjectMapper objectMapper;
 
-    public SubsidyServiceImpl(KafkaTemplate<String, String> kafkaTemplate, SubsidyRepository subsidyRepository, final ObjectMapper objectMapper){
+    private RestTemplate restTemplate;
+
+    @Value("${spring.subsidy.url}")
+    private String subsidyUrl;
+
+    public SubsidyServiceImpl(KafkaTemplate<String, String> kafkaTemplate, final ObjectMapper objectMapper, RestTemplate restTemplate) {
         this.kafkaTemplate = kafkaTemplate;
-        this.subsidyRepository = subsidyRepository;
         this.objectMapper = objectMapper;
+        this.restTemplate = restTemplate;
     }
 
-    @Override
-    public List<Subsidy> listSubsidies(Pageable pageable){
-        return subsidyRepository.findAll(pageable).getContent();
+    public List<Subsidy> listSubsidies(Integer page, Integer size) {
+        try{
+            String requestUrl = String.format("%s/list?page=%d&size=%d", subsidyUrl, page, size);
+            ResponseEntity<List> response = restTemplate.getForEntity(requestUrl, List.class);
+            return response.getBody();
+        } catch(HttpServerErrorException.InternalServerError e){
+            return null;
+        }
     }
 
     @Override
@@ -60,7 +72,13 @@ public class SubsidyServiceImpl implements SubsidyService {
     }
 
     @Override
-    public Optional<Subsidy> getSubsidyById(Integer id){
-        return subsidyRepository.findById(id);
+    public Subsidy getSubsidyById(Integer id){
+        try{
+            String requestUrl = String.format("%s/subsidy/%s", subsidyUrl, id);
+            ResponseEntity<Subsidy> response = restTemplate.getForEntity(requestUrl, Subsidy.class);
+            return response.getBody();
+        } catch(HttpServerErrorException.InternalServerError e){
+            return null;
+        }
     }
 }

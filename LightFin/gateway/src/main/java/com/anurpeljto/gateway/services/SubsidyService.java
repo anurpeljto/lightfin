@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface SubsidyService {
 
-    List<Subsidy> listSubsidies(Pageable pageable);
+    List<Subsidy> listSubsidies(Integer page, Integer size);
 
-    Optional<Subsidy> getSubsidyById(Integer id);
+    Subsidy getSubsidyById(Integer id);
 
     void publishSubsidy(Subsidy subsidy);
 

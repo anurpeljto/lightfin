@@ -3,6 +3,7 @@ package com.anurpeljto.gateway.services.impl;
 import com.anurpeljto.gateway.domain.fiscalization.Item;
 import com.anurpeljto.gateway.domain.fiscalization.Receipt;
 import com.anurpeljto.gateway.domain.loan.Loan;
+import com.anurpeljto.gateway.dto.ReceiptResponse;
 import com.anurpeljto.gateway.model.FiscalizationStatus;
 import com.anurpeljto.gateway.services.FiscalizationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -93,6 +94,18 @@ public class FiscalizationServiceImpl implements FiscalizationService {
         try{
             String requestUrl = String.format("%s/receipt/%s", fiscalizationUrl, id);
             ResponseEntity<Receipt> response = restTemplate.getForEntity(requestUrl, Receipt.class);
+            return response.getBody();
+        } catch(HttpServerErrorException.InternalServerError e){
+            return null;
+        }
+    }
+
+    @Override
+    public ReceiptResponse getFiscalizedThisWeek() {
+        try{
+            String requestUrl = String.format("%s/fiscalized/week", fiscalizationUrl);
+            log.info("Fiscalized this week");
+            ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
             return response.getBody();
         } catch(HttpServerErrorException.InternalServerError e){
             return null;

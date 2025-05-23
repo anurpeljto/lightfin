@@ -6,6 +6,7 @@ import com.anurpeljto.gateway.domain.loan.LoanInput;
 import com.anurpeljto.gateway.domain.subsidy.Subsidy;
 import com.anurpeljto.gateway.domain.subsidy.SubsidyInput;
 import com.anurpeljto.gateway.domain.user.User;
+import com.anurpeljto.gateway.dto.ReceiptResponse;
 import com.anurpeljto.gateway.exceptions.InvalidReceiptException;
 import com.anurpeljto.gateway.model.LoanStatus;
 import com.anurpeljto.gateway.model.SubsidyStatus;
@@ -133,6 +134,11 @@ public class GraphQLController {
         return receipt;
     }
 
+    @QueryMapping
+    public ReceiptResponse getFiscalizedThisWeek() {
+        return fiscalizationService.getFiscalizedThisWeek();
+    }
+
 //    Users and user related methods
 
     @MutationMapping
@@ -164,12 +170,7 @@ public class GraphQLController {
             @Argument("page") final Integer page,
             @Argument("size") final Integer size
     ) {
-        return subsidyService.listSubsidies(
-                PageRequest.of(
-                        Optional.ofNullable(page).orElse(0),
-                        Optional.ofNullable(size).orElse(10)
-                )
-        );
+        return subsidyService.listSubsidies(page, size);
     }
 
     @MutationMapping
@@ -191,7 +192,7 @@ public class GraphQLController {
     public Subsidy approveSubsidy(
             @Argument(name = "id") final Integer id
     ) {
-        Subsidy subsidy = subsidyService.getSubsidyById(id).orElseThrow(() -> new ResourceNotFoundException("Subsidy does not exist"));
+        Subsidy subsidy = subsidyService.getSubsidyById(id);
         subsidyService.approveSubsidy(id);
         return subsidy;
     }
@@ -200,7 +201,7 @@ public class GraphQLController {
     public Subsidy rejectSubsidy(
             @Argument(name = "id") final Integer id
     ) {
-        Subsidy subsidy = subsidyService.getSubsidyById(id).orElseThrow(() -> new ResourceNotFoundException("Subsidy does not exist"));
+        Subsidy subsidy = subsidyService.getSubsidyById(id);
         subsidyService.rejectSubsidy(id);
         return subsidy;
     }
