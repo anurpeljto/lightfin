@@ -5,6 +5,9 @@ type Query {
     listReceipts(page: Int, size: Int): [Receipt]
     getReceiptById(id: ID!): Receipt
     getFiscalizedThisWeek: ReceiptResponse
+    getPendingThisWeek: ReceiptResponse
+    getCancelledThisWeek: ReceiptResponse
+    getTodaysTransactions: TodayResponse
 
     listUsers(page: Int, size: Int): [User]
 
@@ -148,4 +151,13 @@ enum SubsidyStatus {
 type ReceiptResponse {
     data: [Receipt]
     count: Int
+}
+
+type TodayDTOList {
+    status: String
+    count: Int
+}
+
+type TodayResponse {
+    todayDTOList: [TodayDTOList]
 }

@@ -3,8 +3,11 @@ package com.anurpeljto.fiscalizationlistener.services.impl;
 import com.anurpeljto.fiscalizationlistener.domain.Item;
 import com.anurpeljto.fiscalizationlistener.domain.Receipt;
 import com.anurpeljto.fiscalizationlistener.dto.ReceiptResponseDTO;
+import com.anurpeljto.fiscalizationlistener.dto.TodayDTO;
+import com.anurpeljto.fiscalizationlistener.dto.TodayDTOList;
 import com.anurpeljto.fiscalizationlistener.repositories.FiscalizationRepository;
 import com.anurpeljto.fiscalizationlistener.services.FiscalizationService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,5 +69,35 @@ public class FiscalizationServiceImpl implements FiscalizationService {
         OffsetDateTime startOfWeek = today.minusDays(7);
         List<Receipt> receipts = this.fiscalizationRepository.findFiscalizedByThisWeek(startOfWeek, today);
         return new ReceiptResponseDTO(receipts);
+    }
+
+    @Override
+    public ReceiptResponseDTO pendingReceiptsThisWeek() {
+        OffsetDateTime today = OffsetDateTime.now();
+        OffsetDateTime startOfWeek = today.minusDays(7);
+        List<Receipt> receipts = this.fiscalizationRepository.findPendingByThisWeek(startOfWeek, today);
+        return new ReceiptResponseDTO(receipts);
+    }
+
+    @Override
+    public ReceiptResponseDTO cancelledReceiptsThisWeek() {
+        OffsetDateTime today = OffsetDateTime.now();
+        OffsetDateTime startOfWeek = today.minusDays(7);
+        List<Receipt> receipts = this.fiscalizationRepository.findCancelledByThisWeek(startOfWeek, today);
+        return new ReceiptResponseDTO(receipts);
+    }
+
+    @Override
+    public TodayDTOList getTodaysTransactions() {
+        ZoneOffset offset = OffsetDateTime.now().getOffset();
+
+        OffsetDateTime now = OffsetDateTime.now();
+        LocalDate today = now.toLocalDate();
+
+        OffsetDateTime startOfDay = today.atStartOfDay().atOffset(offset);
+        OffsetDateTime endOfDay = today.plusDays(1).atStartOfDay().atOffset(offset);
+
+        List<TodayDTO> receipts = this.fiscalizationRepository.todaysTransactions(startOfDay, endOfDay);
+        return new TodayDTOList(receipts);
     }
 }

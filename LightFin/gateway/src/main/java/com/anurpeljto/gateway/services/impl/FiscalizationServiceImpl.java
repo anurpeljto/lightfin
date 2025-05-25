@@ -4,6 +4,7 @@ import com.anurpeljto.gateway.domain.fiscalization.Item;
 import com.anurpeljto.gateway.domain.fiscalization.Receipt;
 import com.anurpeljto.gateway.domain.loan.Loan;
 import com.anurpeljto.gateway.dto.ReceiptResponse;
+import com.anurpeljto.gateway.dto.TodayResponse;
 import com.anurpeljto.gateway.model.FiscalizationStatus;
 import com.anurpeljto.gateway.services.FiscalizationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -108,6 +109,43 @@ public class FiscalizationServiceImpl implements FiscalizationService {
             ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
             return response.getBody();
         } catch(HttpServerErrorException.InternalServerError e){
+            return null;
+        }
+    }
+
+    @Override
+    public ReceiptResponse getPendingThisWeek() {
+        try{
+            String requestUrl = String.format("%s/pending/week", fiscalizationUrl);
+            ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
+            return response.getBody();
+        } catch(HttpServerErrorException.InternalServerError e){
+            return null;
+        }
+    }
+
+    @Override
+    public ReceiptResponse getCancelledThisWeek() {
+        try{
+            String requestUrl = String.format("%s/cancelled/week", fiscalizationUrl);
+            ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
+            return response.getBody();
+        } catch(HttpServerErrorException.InternalServerError e){
+            return null;
+        }
+    }
+
+    @Override
+    public TodayResponse getTodaysTransactions() {
+        try{
+            String requestUrl = String.format("%s/today", fiscalizationUrl);
+            ResponseEntity<TodayResponse> response = restTemplate.getForEntity(requestUrl, TodayResponse.class);
+            String value = objectMapper.writeValueAsString(response.getBody());
+            log.info("Today transactions: {}", value);
+            return response.getBody();
+        } catch (HttpServerErrorException.InternalServerError e) {
+            return null;
+        } catch (JsonProcessingException e) {
             return null;
         }
     }

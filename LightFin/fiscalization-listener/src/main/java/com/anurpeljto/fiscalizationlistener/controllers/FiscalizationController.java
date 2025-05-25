@@ -2,6 +2,7 @@ package com.anurpeljto.fiscalizationlistener.controllers;
 
 import com.anurpeljto.fiscalizationlistener.domain.Receipt;
 import com.anurpeljto.fiscalizationlistener.dto.ReceiptResponseDTO;
+import com.anurpeljto.fiscalizationlistener.dto.TodayDTOList;
 import com.anurpeljto.fiscalizationlistener.services.FiscalizationService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,5 +45,20 @@ public class FiscalizationController {
     @GetMapping(path = "/fiscalized/week")
     public ReceiptResponseDTO getFiscalizedWeekReceipts(){
         return this.fiscalizationService.fiscalizedReceiptsThisWeek();
+    }
+
+    @GetMapping(path = "/pending/week")
+    public ReceiptResponseDTO getPendingWeekReceipts(){
+        return this.fiscalizationService.pendingReceiptsThisWeek();
+    }
+
+    @GetMapping(path = "/cancelled/week")
+    public ReceiptResponseDTO getCancelledWeekReceipts(){
+        return this.fiscalizationService.cancelledReceiptsThisWeek();
+    }
+
+    @GetMapping(path = "/today")
+    public TodayDTOList getTodayReceipts(){
+        return this.fiscalizationService.getTodaysTransactions();
     }
 }
