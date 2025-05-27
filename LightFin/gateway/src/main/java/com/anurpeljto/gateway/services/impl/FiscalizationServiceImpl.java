@@ -5,6 +5,8 @@ import com.anurpeljto.gateway.domain.fiscalization.Receipt;
 import com.anurpeljto.gateway.domain.loan.Loan;
 import com.anurpeljto.gateway.dto.ReceiptResponse;
 import com.anurpeljto.gateway.dto.TodayResponse;
+import com.anurpeljto.gateway.dto.WeeklyByTypeDTO;
+import com.anurpeljto.gateway.dto.WeeklyByTypeResponse;
 import com.anurpeljto.gateway.model.FiscalizationStatus;
 import com.anurpeljto.gateway.services.FiscalizationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,6 +22,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -148,5 +151,12 @@ public class FiscalizationServiceImpl implements FiscalizationService {
         } catch (JsonProcessingException e) {
             return null;
         }
+    }
+
+    @Override
+    public WeeklyByTypeDTO getWeeklyByType() {
+        String requestUrl = String.format("%s/type/week", fiscalizationUrl);
+        ResponseEntity<WeeklyByTypeDTO> response = restTemplate.getForEntity(requestUrl, WeeklyByTypeDTO.class);
+        return response.getBody();
     }
 }

@@ -1,7 +1,9 @@
 package com.anurpeljto.fiscalizationlistener.repositories;
 
 import com.anurpeljto.fiscalizationlistener.domain.Receipt;
+import com.anurpeljto.fiscalizationlistener.domain.WeeklyByType;
 import com.anurpeljto.fiscalizationlistener.dto.TodayDTO;
+import com.anurpeljto.fiscalizationlistener.dto.WeeklyByTypeDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -35,5 +37,14 @@ public interface FiscalizationRepository extends JpaRepository<Receipt, Integer>
     List<TodayDTO> todaysTransactions(
             @Param("startOfDay") OffsetDateTime startOfDay,
             @Param("endOfDay") OffsetDateTime endOfDay
+    );
+
+    @Query("SELECT new com.anurpeljto.fiscalizationlistener.domain.WeeklyByType(r.paymentType, COUNT(r)) " +
+            "FROM Receipt r " +
+            "WHERE r.timestamp BETWEEN :startOfWeek AND :today " +
+            "GROUP BY r.paymentType")
+    List<WeeklyByType> weeklyByType(
+            @Param("startOfWeek") OffsetDateTime startOfWeek,
+            @Param("today") OffsetDateTime today
     );
 }

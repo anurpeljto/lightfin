@@ -2,9 +2,11 @@ package com.anurpeljto.fiscalizationlistener.services.impl;
 
 import com.anurpeljto.fiscalizationlistener.domain.Item;
 import com.anurpeljto.fiscalizationlistener.domain.Receipt;
+import com.anurpeljto.fiscalizationlistener.domain.WeeklyByType;
 import com.anurpeljto.fiscalizationlistener.dto.ReceiptResponseDTO;
 import com.anurpeljto.fiscalizationlistener.dto.TodayDTO;
 import com.anurpeljto.fiscalizationlistener.dto.TodayDTOList;
+import com.anurpeljto.fiscalizationlistener.dto.WeeklyByTypeDTO;
 import com.anurpeljto.fiscalizationlistener.repositories.FiscalizationRepository;
 import com.anurpeljto.fiscalizationlistener.services.FiscalizationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -99,5 +101,14 @@ public class FiscalizationServiceImpl implements FiscalizationService {
 
         List<TodayDTO> receipts = this.fiscalizationRepository.todaysTransactions(startOfDay, endOfDay);
         return new TodayDTOList(receipts);
+    }
+
+    @Override
+    public WeeklyByTypeDTO getWeeklyByType() {
+        OffsetDateTime today = OffsetDateTime.now();
+        OffsetDateTime startOfWeek = today.minusDays(7);
+
+        List<WeeklyByType> weeklyData = this.fiscalizationRepository.weeklyByType(startOfWeek, today);
+        return new WeeklyByTypeDTO(weeklyData);
     }
 }

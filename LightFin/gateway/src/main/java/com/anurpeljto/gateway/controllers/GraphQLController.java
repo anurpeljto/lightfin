@@ -8,6 +8,7 @@ import com.anurpeljto.gateway.domain.subsidy.SubsidyInput;
 import com.anurpeljto.gateway.domain.user.User;
 import com.anurpeljto.gateway.dto.ReceiptResponse;
 import com.anurpeljto.gateway.dto.TodayResponse;
+import com.anurpeljto.gateway.dto.WeeklyByTypeDTO;
 import com.anurpeljto.gateway.exceptions.InvalidReceiptException;
 import com.anurpeljto.gateway.model.LoanStatus;
 import com.anurpeljto.gateway.model.SubsidyStatus;
@@ -153,6 +154,11 @@ public class GraphQLController {
     @QueryMapping
     public TodayResponse getTodaysTransactions() {
         return fiscalizationService.getTodaysTransactions();
+    }
+
+    @QueryMapping
+    public WeeklyByTypeDTO getWeeklyByType() {
+        return fiscalizationService.getWeeklyByType();
     }
 //    Users and user related methods
 

@@ -8,6 +8,7 @@ type Query {
     getPendingThisWeek: ReceiptResponse
     getCancelledThisWeek: ReceiptResponse
     getTodaysTransactions: TodayResponse
+    getWeeklyByType: WeeklyByTypeResponse
 
     listUsers(page: Int, size: Int): [User]
 
@@ -160,4 +161,15 @@ type TodayDTOList {
 
 type TodayResponse {
     todayDTOList: [TodayDTOList]
+}
+
+type WeeklyByType {
+    id: ID,
+    label: String,
+    value: Int,
+    color: String
+}
+
+type WeeklyByTypeResponse {
+    weeklyByType: [WeeklyByType]
 }
