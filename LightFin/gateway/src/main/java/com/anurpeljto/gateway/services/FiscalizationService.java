@@ -16,13 +16,13 @@ public interface FiscalizationService {
 
     Receipt getReceiptById(Integer id);
 
-    ReceiptResponse getFiscalizedThisWeek();
+    ReceiptResponse getFiscalizedThisWeek(Integer limit);
 
-    ReceiptResponse getPendingThisWeek();
+    ReceiptResponse getPendingThisWeek(Integer limit);
 
-    ReceiptResponse getCancelledThisWeek();
+    ReceiptResponse getCancelledThisWeek(Integer limit);
 
-    TodayResponse getTodaysTransactions();
+    TodayResponse getTodaysTransactions(Integer limit);
 
     WeeklyByTypeDTO getWeeklyByType();
 }

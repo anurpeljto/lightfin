@@ -66,31 +66,31 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public ReceiptResponseDTO fiscalizedReceiptsThisWeek() {
+    public ReceiptResponseDTO fiscalizedReceiptsThisWeek(Integer limit) {
         OffsetDateTime today = OffsetDateTime.now();
         OffsetDateTime startOfWeek = today.minusDays(7);
-        List<Receipt> receipts = this.fiscalizationRepository.findFiscalizedByThisWeek(startOfWeek, today);
+        List<Receipt> receipts = this.fiscalizationRepository.findFiscalizedByThisWeek(startOfWeek, today, limit);
         return new ReceiptResponseDTO(receipts);
     }
 
     @Override
-    public ReceiptResponseDTO pendingReceiptsThisWeek() {
+    public ReceiptResponseDTO pendingReceiptsThisWeek(Integer limit) {
         OffsetDateTime today = OffsetDateTime.now();
         OffsetDateTime startOfWeek = today.minusDays(7);
-        List<Receipt> receipts = this.fiscalizationRepository.findPendingByThisWeek(startOfWeek, today);
+        List<Receipt> receipts = this.fiscalizationRepository.findPendingByThisWeek(startOfWeek, today, limit);
         return new ReceiptResponseDTO(receipts);
     }
 
     @Override
-    public ReceiptResponseDTO cancelledReceiptsThisWeek() {
+    public ReceiptResponseDTO cancelledReceiptsThisWeek(Integer limit) {
         OffsetDateTime today = OffsetDateTime.now();
         OffsetDateTime startOfWeek = today.minusDays(7);
-        List<Receipt> receipts = this.fiscalizationRepository.findCancelledByThisWeek(startOfWeek, today);
+        List<Receipt> receipts = this.fiscalizationRepository.findCancelledByThisWeek(startOfWeek, today, limit);
         return new ReceiptResponseDTO(receipts);
     }
 
     @Override
-    public TodayDTOList getTodaysTransactions() {
+    public TodayDTOList getTodaysTransactions(Integer limit) {
         ZoneOffset offset = OffsetDateTime.now().getOffset();
 
         OffsetDateTime now = OffsetDateTime.now();
@@ -99,7 +99,7 @@ public class FiscalizationServiceImpl implements FiscalizationService {
         OffsetDateTime startOfDay = today.atStartOfDay().atOffset(offset);
         OffsetDateTime endOfDay = today.plusDays(1).atStartOfDay().atOffset(offset);
 
-        List<TodayDTO> receipts = this.fiscalizationRepository.todaysTransactions(startOfDay, endOfDay);
+        List<TodayDTO> receipts = this.fiscalizationRepository.todaysTransactions(startOfDay, endOfDay, limit);
         return new TodayDTOList(receipts);
     }
 

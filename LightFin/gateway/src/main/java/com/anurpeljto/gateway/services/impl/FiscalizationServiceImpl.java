@@ -105,9 +105,9 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public ReceiptResponse getFiscalizedThisWeek() {
+    public ReceiptResponse getFiscalizedThisWeek(Integer limit) {
         try{
-            String requestUrl = String.format("%s/fiscalized/week", fiscalizationUrl);
+            String requestUrl = String.format("%s/fiscalized/week?limit=%d", fiscalizationUrl, limit);
             log.info("Fiscalized this week");
             ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
             return response.getBody();
@@ -117,9 +117,9 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public ReceiptResponse getPendingThisWeek() {
+    public ReceiptResponse getPendingThisWeek(Integer limit) {
         try{
-            String requestUrl = String.format("%s/pending/week", fiscalizationUrl);
+            String requestUrl = String.format("%s/pending/week?limit=%d", fiscalizationUrl, limit);
             ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
             return response.getBody();
         } catch(HttpServerErrorException.InternalServerError e){
@@ -128,9 +128,9 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public ReceiptResponse getCancelledThisWeek() {
+    public ReceiptResponse getCancelledThisWeek(Integer limit) {
         try{
-            String requestUrl = String.format("%s/cancelled/week", fiscalizationUrl);
+            String requestUrl = String.format("%s/cancelled/week?limit=%d", fiscalizationUrl, limit);
             ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
             return response.getBody();
         } catch(HttpServerErrorException.InternalServerError e){
@@ -139,9 +139,9 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public TodayResponse getTodaysTransactions() {
+    public TodayResponse getTodaysTransactions(Integer limit) {
         try{
-            String requestUrl = String.format("%s/today", fiscalizationUrl);
+            String requestUrl = String.format("%s/today?limit=%d", fiscalizationUrl, limit);
             ResponseEntity<TodayResponse> response = restTemplate.getForEntity(requestUrl, TodayResponse.class);
             String value = objectMapper.writeValueAsString(response.getBody());
             log.info("Today transactions: {}", value);

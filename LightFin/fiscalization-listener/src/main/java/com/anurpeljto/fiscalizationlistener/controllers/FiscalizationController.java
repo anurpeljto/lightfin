@@ -45,23 +45,31 @@ public class FiscalizationController {
     }
 
     @GetMapping(path = "/fiscalized/week")
-    public ReceiptResponseDTO getFiscalizedWeekReceipts(){
-        return this.fiscalizationService.fiscalizedReceiptsThisWeek();
+    public ReceiptResponseDTO getFiscalizedWeekReceipts(
+            @RequestParam(name="limit", required = false, defaultValue = "50") Integer limit
+    ){
+        return this.fiscalizationService.fiscalizedReceiptsThisWeek(limit);
     }
 
     @GetMapping(path = "/pending/week")
-    public ReceiptResponseDTO getPendingWeekReceipts(){
-        return this.fiscalizationService.pendingReceiptsThisWeek();
+    public ReceiptResponseDTO getPendingWeekReceipts(
+            @RequestParam(name="limit", required = false, defaultValue = "50") Integer limit
+    ){
+        return this.fiscalizationService.pendingReceiptsThisWeek(limit);
     }
 
     @GetMapping(path = "/cancelled/week")
-    public ReceiptResponseDTO getCancelledWeekReceipts(){
-        return this.fiscalizationService.cancelledReceiptsThisWeek();
+    public ReceiptResponseDTO getCancelledWeekReceipts(
+            @RequestParam(name="limit", required = false, defaultValue = "50") Integer limit
+    ){
+        return this.fiscalizationService.cancelledReceiptsThisWeek(limit);
     }
 
     @GetMapping(path = "/today")
-    public TodayDTOList getTodayReceipts(){
-        return this.fiscalizationService.getTodaysTransactions();
+    public TodayDTOList getTodayReceipts(
+            @RequestParam(name="limit", required = false, defaultValue = "50") Integer limit
+    ){
+        return this.fiscalizationService.getTodaysTransactions(limit);
     }
 
     @GetMapping(path = "/type/week")

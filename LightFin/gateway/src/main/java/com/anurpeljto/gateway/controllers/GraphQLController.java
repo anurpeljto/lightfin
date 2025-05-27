@@ -137,23 +137,31 @@ public class GraphQLController {
     }
 
     @QueryMapping
-    public ReceiptResponse getFiscalizedThisWeek() {
-        return fiscalizationService.getFiscalizedThisWeek();
+    public ReceiptResponse getFiscalizedThisWeek(
+            @Argument(name="limit") final Integer limit
+    ) {
+        return fiscalizationService.getFiscalizedThisWeek(limit);
     }
 
     @QueryMapping
-    public ReceiptResponse getPendingThisWeek() {
-        return fiscalizationService.getPendingThisWeek();
+    public ReceiptResponse getPendingThisWeek(
+            @Argument(name="limit") final Integer limit
+    ) {
+        return fiscalizationService.getPendingThisWeek(limit);
     }
 
     @QueryMapping
-    public ReceiptResponse getCancelledThisWeek() {
-        return fiscalizationService.getCancelledThisWeek();
+    public ReceiptResponse getCancelledThisWeek(
+            @Argument(name="limit") final Integer limit
+    ) {
+        return fiscalizationService.getCancelledThisWeek(limit);
     }
 
     @QueryMapping
-    public TodayResponse getTodaysTransactions() {
-        return fiscalizationService.getTodaysTransactions();
+    public TodayResponse getTodaysTransactions(
+            @Argument(name="limit") final Integer limit
+    ) {
+        return fiscalizationService.getTodaysTransactions(limit);
     }
 
     @QueryMapping

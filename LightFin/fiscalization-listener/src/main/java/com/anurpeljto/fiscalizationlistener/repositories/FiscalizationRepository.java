@@ -15,28 +15,32 @@ import java.util.List;
 
 public interface FiscalizationRepository extends JpaRepository<Receipt, Integer> {
 
-    @Query("SELECT r FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek AND r.status = 'FISCALIZED'")
+    @Query("SELECT r FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek AND r.status = 'FISCALIZED' order by r.timestamp LIMIT :limit")
     List<Receipt> findFiscalizedByThisWeek(
             @Param("startOfWeek") OffsetDateTime startOfWeek,
-            @Param("endOfWeek") OffsetDateTime endOfWeek
+            @Param("endOfWeek") OffsetDateTime endOfWeek,
+            @Param("limit") Integer limit
     );
 
-    @Query("SELECT r FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek AND r.status = 'PENDING'")
+    @Query("SELECT r FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek AND r.status = 'PENDING' order by r.timestamp LIMIT :limit")
     List<Receipt> findPendingByThisWeek(
             @Param("startOfWeek") OffsetDateTime startOfWeek,
-            @Param("endOfWeek") OffsetDateTime endOfWeek
+            @Param("endOfWeek") OffsetDateTime endOfWeek,
+            @Param("limit") Integer limit
     );
 
-    @Query("SELECT r FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek AND r.status = 'CANCELLED'")
+    @Query("SELECT r FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek AND r.status = 'CANCELLED' order by r.timestamp LIMIT :limit")
     List<Receipt> findCancelledByThisWeek(
             @Param("startOfWeek") OffsetDateTime startOfWeek,
-            @Param("endOfWeek") OffsetDateTime endOfWeek
+            @Param("endOfWeek") OffsetDateTime endOfWeek,
+            @Param("limit") Integer limit
     );
 
-    @Query("SELECT new com.anurpeljto.fiscalizationlistener.dto.TodayDTO(r.status, COUNT(r)) FROM Receipt r WHERE r.timestamp BETWEEN :startOfDay AND :endOfDay GROUP BY r.status")
+    @Query("SELECT new com.anurpeljto.fiscalizationlistener.dto.TodayDTO(r.status, COUNT(r)) FROM Receipt r WHERE r.timestamp BETWEEN :startOfDay AND :endOfDay GROUP BY r.status ORDER BY r.status LIMIT :limit")
     List<TodayDTO> todaysTransactions(
             @Param("startOfDay") OffsetDateTime startOfDay,
-            @Param("endOfDay") OffsetDateTime endOfDay
+            @Param("endOfDay") OffsetDateTime endOfDay,
+            @Param("limit") Integer limit
     );
 
     @Query("SELECT new com.anurpeljto.fiscalizationlistener.domain.WeeklyByType(r.paymentType, COUNT(r)) " +

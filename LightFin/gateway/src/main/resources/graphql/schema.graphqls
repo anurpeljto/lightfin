@@ -4,10 +4,10 @@ type Query {
 
     listReceipts(page: Int, size: Int): [Receipt]
     getReceiptById(id: ID!): Receipt
-    getFiscalizedThisWeek: ReceiptResponse
-    getPendingThisWeek: ReceiptResponse
-    getCancelledThisWeek: ReceiptResponse
-    getTodaysTransactions: TodayResponse
+    getFiscalizedThisWeek(limit: Int = 50): ReceiptResponse
+    getPendingThisWeek(limit: Int = 50): ReceiptResponse
+    getCancelledThisWeek(limit: Int = 50): ReceiptResponse
+    getTodaysTransactions(limit: Int = 50): TodayResponse
     getWeeklyByType: WeeklyByTypeResponse
 
     listUsers(page: Int, size: Int): [User]
