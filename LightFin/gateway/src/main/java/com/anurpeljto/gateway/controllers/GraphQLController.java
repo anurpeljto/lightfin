@@ -214,6 +214,13 @@ public class GraphQLController {
     }
 
     @QueryMapping
+    public User getUserById(
+            @Argument("id") final Integer id
+    ) {
+        return userService.getUserById(id);
+    }
+
+    @QueryMapping
     public Iterable<Subsidy> listSubsidies(
             @Argument("page") final Integer page,
             @Argument("size") final Integer size

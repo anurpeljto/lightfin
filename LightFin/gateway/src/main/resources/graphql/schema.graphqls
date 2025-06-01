@@ -13,6 +13,7 @@ type Query {
     getLatestReceipts: [Receipt]
 
     listUsers(page: Int, size: Int): [User]
+    getUserById(id: Int!): User
 
     listSubsidies(page: Int, size: Int): [Subsidy]
     getSubsidyById(id: ID!): Subsidy

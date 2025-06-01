@@ -3,6 +3,8 @@ package com.anurpeljto.userlistener.services.impl;
 import com.anurpeljto.userlistener.domain.User;
 import com.anurpeljto.userlistener.repositories.UserRepository;
 import com.anurpeljto.userlistener.services.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -52,5 +54,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(User user){
         return userRepository.save(user);
+    }
+
+    @Override
+    public User getUserById(Integer id){
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Page<User> getAllUsers(Pageable pageable){
+        return userRepository.findAll(pageable);
     }
 }

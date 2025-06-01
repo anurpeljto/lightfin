@@ -1,10 +1,17 @@
 package com.anurpeljto.loanlistener.services.impl;
 
 import com.anurpeljto.loanlistener.domain.Loan;
+import com.anurpeljto.loanlistener.domain.User;
 import com.anurpeljto.loanlistener.exceptions.LoanNotFound;
 import com.anurpeljto.loanlistener.model.LoanStatus;
 import com.anurpeljto.loanlistener.repositories.LoanRepository;
 import com.anurpeljto.loanlistener.services.LoanService;
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfTable;
+import com.lowagie.text.pdf.PdfWriter;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,5 +97,35 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public Page<Loan> getLoansByUserId(Integer userId, Pageable pageable) {
         return loanRepository.findByBorrowerId(userId, pageable);
+    }
+
+    @Override
+    public byte[] generateLoanReport(Integer id, String first_name, String last_name, String email){
+        List<Loan> loans = this.getLoans(PageRequest.of(0, 1000));
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Document document = new Document();
+        PdfWriter.getInstance(document, out);
+        document.open();
+
+        document.add(new Paragraph("Loan report for " + first_name + " " + last_name));
+        Paragraph emailParagraph = new Paragraph("Email: " + email);
+        emailParagraph.setSpacingAfter(10f);
+        document.add(emailParagraph);
+
+        PdfPTable table = new PdfPTable(3);
+        table.addCell("Loan ID");
+        table.addCell("Amount");
+        table.addCell("Status");
+
+        for (Loan loan : loans) {
+            table.addCell(String.valueOf(loan.getId()));
+            table.addCell(String.valueOf(loan.getAmount()));
+            table.addCell(String.valueOf(loan.getStatus()));
+        }
+
+        document.add(table);
+        document.close();
+
+        return out.toByteArray();
     }
 }

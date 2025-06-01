@@ -12,4 +12,6 @@ public interface UserService {
     void updateUser(User user);
 
     Iterable<User> getUsers(Pageable pageable);
+
+    User getUserById(Integer id);
 }

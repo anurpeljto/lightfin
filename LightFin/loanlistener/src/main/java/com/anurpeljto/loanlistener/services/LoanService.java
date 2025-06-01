@@ -1,6 +1,7 @@
 package com.anurpeljto.loanlistener.services;
 
 import com.anurpeljto.loanlistener.domain.Loan;
+import com.anurpeljto.loanlistener.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,4 +25,6 @@ public interface LoanService {
     Loan getLoanById(Integer id);
 
     Page<Loan> getLoansByUserId(Integer userId, Pageable pageable);
+
+    byte[] generateLoanReport(Integer userId, String first_name, String last_name, String email);
 }
