@@ -1,6 +1,7 @@
 type Query {
     listLoans(page: Int, size: Int): [Loan]
     getLoanById(id: ID!): Loan
+    getLoansByUserId(id: ID!, page: Int=0, size: Int=20): LoanByUserResponse
 
     listReceipts(page: Int, size: Int): [Receipt]
     getReceiptById(id: ID!): Receipt
@@ -9,6 +10,7 @@ type Query {
     getCancelledThisWeek(limit: Int = 50): ReceiptResponse
     getTodaysTransactions(limit: Int = 50): TodayResponse
     getWeeklyByType: WeeklyByTypeResponse
+    getLatestReceipts: [Receipt]
 
     listUsers(page: Int, size: Int): [User]
 
@@ -172,4 +174,8 @@ type WeeklyByType {
 
 type WeeklyByTypeResponse {
     weeklyByType: [WeeklyByType]
+}
+
+type LoanByUserResponse {
+    data: [Loan]
 }

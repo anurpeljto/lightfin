@@ -1,5 +1,6 @@
 package com.anurpeljto.gateway.controllers;
 
+import com.anurpeljto.gateway.components.TransactionBuffer;
 import com.anurpeljto.gateway.domain.loan.Loan;
 import com.anurpeljto.gateway.domain.fiscalization.Receipt;
 import com.anurpeljto.gateway.domain.loan.LoanInput;
@@ -9,6 +10,7 @@ import com.anurpeljto.gateway.domain.user.User;
 import com.anurpeljto.gateway.dto.ReceiptResponse;
 import com.anurpeljto.gateway.dto.TodayResponse;
 import com.anurpeljto.gateway.dto.WeeklyByTypeDTO;
+import com.anurpeljto.gateway.dto.loan.LoanResponseDto;
 import com.anurpeljto.gateway.exceptions.InvalidReceiptException;
 import com.anurpeljto.gateway.model.LoanStatus;
 import com.anurpeljto.gateway.model.SubsidyStatus;
@@ -41,16 +43,18 @@ public class GraphQLController {
     private final SubsidyService subsidyService;
 
     private final RestTemplate restTemplate;
+    private final TransactionBuffer transactionBuffer;
 
     @Value("${spring.loans.url}")
     private String loanServiceUrl;
 
-    public GraphQLController(final LoanService loanS, final FiscalizationService fiscalizationService, final UserService userService, final SubsidyService subsidyService, final RestTemplate restTemplate) {
+    public GraphQLController(final LoanService loanS, final FiscalizationService fiscalizationService, final UserService userService, final SubsidyService subsidyService, final RestTemplate restTemplate, TransactionBuffer transactionBuffer) {
         this.loanService = loanS;
         this.fiscalizationService = fiscalizationService;
         this.userService = userService;
         this.subsidyService = subsidyService;
         this.restTemplate = restTemplate;
+        this.transactionBuffer = transactionBuffer;
     }
 
 //    Loans and loan related methods
@@ -109,6 +113,15 @@ public class GraphQLController {
         return loan;
     }
 
+    @QueryMapping
+    public LoanResponseDto getLoansByUserId(
+            @Argument("id") final Integer id,
+            @Argument("page") final Integer page,
+            @Argument("size") final Integer size
+    ) {
+        return loanService.getLoansByUserId(id, page, size);
+    }
+
 //    Receipts and receipt related methods
 
     @QueryMapping
@@ -132,6 +145,7 @@ public class GraphQLController {
         if(receipt == null || receipt.getItems().isEmpty() || receipt.getPaymentType() == null) {
             throw new InvalidReceiptException("receipt is null or empty");
         }
+        transactionBuffer.addTransaction(receipt);
         fiscalizationService.publishReceipt(receipt);
         return receipt;
     }
@@ -167,6 +181,11 @@ public class GraphQLController {
     @QueryMapping
     public WeeklyByTypeDTO getWeeklyByType() {
         return fiscalizationService.getWeeklyByType();
+    }
+
+    @QueryMapping
+    public List<Receipt> getLatestReceipts() {
+        return transactionBuffer.getTransactions();
     }
 //    Users and user related methods
 

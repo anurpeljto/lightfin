@@ -9,8 +9,10 @@ public class WeeklyByType {
     private String label;
     private Integer value;
     private String color;
+    private String id;
 
     public WeeklyByType(String label, Long value) {
+        this.id = label;
         this.label = label;
         this.value = value.intValue();
         if(Objects.equals(this.label, "CASH")){

@@ -7,6 +7,7 @@ import com.anurpeljto.gateway.dto.ReceiptResponse;
 import com.anurpeljto.gateway.dto.TodayResponse;
 import com.anurpeljto.gateway.dto.WeeklyByTypeDTO;
 import com.anurpeljto.gateway.dto.WeeklyByTypeResponse;
+import com.anurpeljto.gateway.dto.loan.LoanResponseDto;
 import com.anurpeljto.gateway.model.FiscalizationStatus;
 import com.anurpeljto.gateway.services.FiscalizationService;
 import com.fasterxml.jackson.core.JsonProcessingException;

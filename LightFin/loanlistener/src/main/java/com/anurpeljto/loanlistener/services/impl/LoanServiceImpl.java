@@ -6,6 +6,8 @@ import com.anurpeljto.loanlistener.model.LoanStatus;
 import com.anurpeljto.loanlistener.repositories.LoanRepository;
 import com.anurpeljto.loanlistener.services.LoanService;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -82,5 +84,10 @@ public class LoanServiceImpl implements LoanService {
     public Loan getLoanById(Integer id){
         return loanRepository.findById(id)
                 .orElseThrow(() -> new LoanNotFound("Loan not found with ID: " + id));
+    }
+
+    @Override
+    public Page<Loan> getLoansByUserId(Integer userId, Pageable pageable) {
+        return loanRepository.findByBorrowerId(userId, pageable);
     }
 }

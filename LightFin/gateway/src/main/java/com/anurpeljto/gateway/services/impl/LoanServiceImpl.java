@@ -1,6 +1,7 @@
 package com.anurpeljto.gateway.services.impl;
 
 import com.anurpeljto.gateway.domain.loan.Loan;
+import com.anurpeljto.gateway.dto.loan.LoanResponseDto;
 import com.anurpeljto.gateway.services.LoanService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -76,5 +77,12 @@ public class LoanServiceImpl implements LoanService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public LoanResponseDto getLoansByUserId(Integer id, Integer page, Integer size){
+        String requestUrl = String.format("%s/loan/user/%s?page=%d&size=%d", loanServiceUrl, id, page, size);
+        ResponseEntity<LoanResponseDto> response = restTemplate.getForEntity(requestUrl, LoanResponseDto.class);
+        return response.getBody();
     }
 }
