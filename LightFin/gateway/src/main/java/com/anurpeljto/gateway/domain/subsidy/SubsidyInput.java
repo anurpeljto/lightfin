@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,6 +17,6 @@ public class SubsidyInput {
 
     private Integer recipientId;
 
-    private Float amount;
+    private BigDecimal amount;
 
 }

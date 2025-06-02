@@ -8,6 +8,7 @@ import com.anurpeljto.gateway.domain.subsidy.Subsidy;
 import com.anurpeljto.gateway.domain.subsidy.SubsidyInput;
 import com.anurpeljto.gateway.domain.user.User;
 import com.anurpeljto.gateway.dto.ReceiptResponse;
+import com.anurpeljto.gateway.dto.SubsidyPageDTO;
 import com.anurpeljto.gateway.dto.TodayResponse;
 import com.anurpeljto.gateway.dto.WeeklyByTypeDTO;
 import com.anurpeljto.gateway.dto.loan.LoanResponseDto;
@@ -20,6 +21,7 @@ import com.anurpeljto.gateway.services.SubsidyService;
 import com.anurpeljto.gateway.services.UserService;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -231,6 +233,18 @@ public class GraphQLController {
             @Argument("size") final Integer size
     ) {
         return subsidyService.listSubsidies(page, size);
+    }
+
+    @QueryMapping
+    public SubsidyPageDTO getSubsidiesByUserId(
+            @Argument("id") final Integer userId,
+            @Argument("page") final Integer page,
+            @Argument("size") final Integer size,
+            @Argument("filterBy") final String filterBy,
+            @Argument("sortBy") final String sortBy
+    ){
+        SubsidyPageDTO subsidies = subsidyService.getSubsidiesByUserId(userId, page, size, filterBy, sortBy);
+        return subsidies;
     }
 
     @MutationMapping

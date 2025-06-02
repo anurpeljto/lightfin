@@ -4,10 +4,13 @@ import com.anurpeljto.gateway.domain.fiscalization.Receipt;
 import com.anurpeljto.gateway.domain.loan.Loan;
 import com.anurpeljto.gateway.domain.subsidy.Subsidy;
 import com.anurpeljto.gateway.domain.subsidy.SubsidyGrant;
+import com.anurpeljto.gateway.dto.SubsidyPageDTO;
 import com.anurpeljto.gateway.services.SubsidyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -18,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class SubsidyServiceImpl implements SubsidyService {
 
@@ -76,6 +80,17 @@ public class SubsidyServiceImpl implements SubsidyService {
         try{
             String requestUrl = String.format("%s/subsidy/%s", subsidyUrl, id);
             ResponseEntity<Subsidy> response = restTemplate.getForEntity(requestUrl, Subsidy.class);
+            return response.getBody();
+        } catch(HttpServerErrorException.InternalServerError e){
+            return null;
+        }
+    }
+
+    @Override
+    public SubsidyPageDTO getSubsidiesByUserId(Integer id, Integer page, Integer size, String filterBy, String sortBy) {
+        try{
+            String reqUrl = String.format("%s/subsidy/user/%d?page=%d&size=%d&filterBy=%s&sortBy=%s", subsidyUrl, id, page, size, filterBy, sortBy);
+            ResponseEntity<SubsidyPageDTO> response = restTemplate.getForEntity(reqUrl, SubsidyPageDTO.class);
             return response.getBody();
         } catch(HttpServerErrorException.InternalServerError e){
             return null;

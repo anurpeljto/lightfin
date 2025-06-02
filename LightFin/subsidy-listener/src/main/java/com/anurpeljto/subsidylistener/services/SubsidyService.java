@@ -1,6 +1,8 @@
 package com.anurpeljto.subsidylistener.services;
 
 import com.anurpeljto.subsidylistener.domain.Subsidy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -17,4 +19,6 @@ public interface SubsidyService {
     List<Subsidy> getSubsidies();
 
     Subsidy getSubsidyById(Integer id);
+
+    Page<Subsidy> getSubsidiesByUserId(Integer id, Pageable pageable);
 }

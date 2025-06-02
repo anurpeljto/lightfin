@@ -29,9 +29,9 @@ public class Subsidy {
     @Column(name = "recipient_id")
     private Integer recipientId;
 
-    private float amount;
+    private BigDecimal amount;
 
-    private Date approval_date;
+    private Date approvalDate;
 
     private Date valid_until;
 

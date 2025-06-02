@@ -6,6 +6,8 @@ import com.anurpeljto.subsidylistener.model.SubsidyStatus;
 import com.anurpeljto.subsidylistener.repositories.SubsidyRepository;
 import com.anurpeljto.subsidylistener.services.SubsidyService;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -81,5 +83,10 @@ public class SubsidyServiceImpl implements SubsidyService {
     @Override
     public Subsidy getSubsidyById(Integer id) {
         return subsidyRepository.findById(id).orElseThrow(() -> new SubsidyMissingException());
+    }
+
+    @Override
+    public Page<Subsidy> getSubsidiesByUserId(Integer id, Pageable pageable){
+        return subsidyRepository.findByRecipientId(id, pageable);
     }
 }

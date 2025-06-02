@@ -1,13 +1,21 @@
 package com.anurpeljto.subsidylistener.controllers;
 
 import com.anurpeljto.subsidylistener.domain.Subsidy;
+import com.anurpeljto.subsidylistener.dto.SubsidyPageDTO;
 import com.anurpeljto.subsidylistener.services.SubsidyService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 public class SubsidyController {
 
@@ -25,5 +33,25 @@ public class SubsidyController {
     @GetMapping(path = "/subsidy/{id}")
     public Subsidy getSubsidy(@PathVariable("id") Integer id) {
         return subsidyService.getSubsidyById(id);
+    }
+
+    @GetMapping(path = "/subsidy/user/{id}")
+    public SubsidyPageDTO getSubsidiesByUserId(
+            @PathVariable("id") Integer id,
+            @RequestParam("page") Integer page,
+            @RequestParam("size") Integer size,
+            @RequestParam("filterBy") String filterBy,
+            @RequestParam("sortBy") String sortBy) {
+
+        String sortField = (filterBy == null || filterBy.isBlank()) ? "id" : filterBy;
+        Sort.Direction direction;
+        try {
+            direction = Sort.Direction.valueOf((sortBy == null) ? "DESC" : sortBy.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            direction = Sort.Direction.DESC;
+        }
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        Page<Subsidy> subsidies = subsidyService.getSubsidiesByUserId(id, pageable);
+        return new SubsidyPageDTO(subsidies);
     }
 }
