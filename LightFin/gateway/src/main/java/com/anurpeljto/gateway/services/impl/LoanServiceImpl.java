@@ -80,8 +80,8 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public LoanResponseDto getLoansByUserId(Integer id, Integer page, Integer size){
-        String requestUrl = String.format("%s/loan/user/%s?page=%d&size=%d", loanServiceUrl, id, page, size);
+    public LoanResponseDto getLoansByUserId(Integer id, Integer page, Integer size, String filterBy, String sortBy){
+        String requestUrl = String.format("%s/loan/user/%s?page=%d&size=%d&filterBy=%s&sortBy=%s", loanServiceUrl, id, page, size, filterBy, sortBy);
         ResponseEntity<LoanResponseDto> response = restTemplate.getForEntity(requestUrl, LoanResponseDto.class);
         return response.getBody();
     }

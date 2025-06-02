@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,14 +31,26 @@ public class LoanController {
     @GetMapping(path = "/list")
     public List<Loan> getLoans(
             @RequestParam(required = false) final Integer page,
-            @RequestParam(required = false) final Integer size
+            @RequestParam(required = false) final Integer size,
+            @RequestParam(required = false) final String filterBy,
+            @RequestParam(required = false) final String sortBy
     ) {
-        return this.loanService.getLoans(
-                PageRequest.of(
-                        Optional.ofNullable(page).orElse(0),
-                        Optional.ofNullable(size).orElse(10)
-                )
-        );
+        int pageNum = Optional.ofNullable(page).orElse(0);
+        int pageSize = Optional.ofNullable(size).orElse(10);
+        String sortField = Optional.ofNullable(filterBy).orElse("id");
+
+        Sort.Direction direction;
+        try {
+            direction = Sort.Direction.valueOf(
+                    Optional.ofNullable(sortBy).orElse("DESC").toUpperCase()
+            );
+        } catch (IllegalArgumentException e) {
+            direction = Sort.Direction.DESC;
+        }
+
+        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(direction, sortField));
+
+        return loanService.getLoans(pageable);
     }
 
     @GetMapping(path = "/loan/{id}")
@@ -52,12 +65,24 @@ public class LoanController {
     public LoanResponseDto getLoans(
             @PathVariable final Integer id,
             @RequestParam(required = false, defaultValue = "0") final Integer page,
-            @RequestParam(required = false, defaultValue = "20") final Integer size
-    ){
-        List<Loan> loans = this.loanService.getLoansByUserId(id, PageRequest.of(page, size)).getContent();
+            @RequestParam(required = false, defaultValue = "20") final Integer size,
+            @RequestParam(required = false) final String filterBy,
+            @RequestParam(required = false) final String sortBy
+    ) {
+        String sortField = (filterBy == null || filterBy.isBlank()) ? "id" : filterBy;
+        Sort.Direction direction;
+        try {
+            direction = Sort.Direction.valueOf((sortBy == null) ? "DESC" : sortBy.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            direction = Sort.Direction.DESC;
+        }
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        List<Loan> loans = this.loanService.getLoansByUserId(id, pageable).getContent();
+
         List<LoanDto> dtos = loans.stream()
                 .map(l -> new LoanDto(l.getId(), l.getBorrowerId(), l.getAmount(), l.getInterestRate(), l.getStatus()))
                 .toList();
+
         return new LoanResponseDto(dtos);
     }
 

@@ -62,9 +62,12 @@ public class GraphQLController {
     @QueryMapping
     public List<Loan> listLoans(
             @Argument("page") final Integer page,
-            @Argument("size") final Integer size) {
+            @Argument("size") final Integer size,
+            @Argument("filterBy") final String filterBy,
+            @Argument("sortBy") final String sortBy
+            ) {
 
-        String requestUrl = String.format("%s/list?page=%d&size=%d", loanServiceUrl, page, size);
+        String requestUrl = String.format("%s/list?page=%d&size=%d&orderBy=%s&sortBy=%s", loanServiceUrl, page, size, filterBy, sortBy);
         ResponseEntity<List> response = restTemplate.getForEntity(requestUrl, List.class);
 
         return response.getBody();
@@ -117,9 +120,11 @@ public class GraphQLController {
     public LoanResponseDto getLoansByUserId(
             @Argument("id") final Integer id,
             @Argument("page") final Integer page,
-            @Argument("size") final Integer size
+            @Argument("size") final Integer size,
+            @Argument("filterBy") final String filterBy,
+            @Argument("sortBy") final String sortBy
     ) {
-        return loanService.getLoansByUserId(id, page, size);
+        return loanService.getLoansByUserId(id, page, size, filterBy, sortBy);
     }
 
 //    Receipts and receipt related methods

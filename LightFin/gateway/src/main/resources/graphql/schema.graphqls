@@ -1,7 +1,7 @@
 type Query {
-    listLoans(page: Int, size: Int): [Loan]
+    listLoans(page: Int, size: Int, filterBy: String, sortBy: String): [Loan]
     getLoanById(id: ID!): Loan
-    getLoansByUserId(id: ID!, page: Int=0, size: Int=20): LoanByUserResponse
+    getLoansByUserId(id: ID!, page: Int=0, size: Int=20, filterBy: String, sortBy: String): LoanByUserResponse
 
     listReceipts(page: Int, size: Int): [Receipt]
     getReceiptById(id: ID!): Receipt

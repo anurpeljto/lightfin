@@ -17,5 +17,5 @@ public interface LoanService {
 
     void publishLoan(Loan loan);
 
-    LoanResponseDto getLoansByUserId(Integer userId, Integer page, Integer size);
+    LoanResponseDto getLoansByUserId(Integer userId, Integer page, Integer size, String filterBy, String sortBy);
 }
