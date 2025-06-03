@@ -3,12 +3,12 @@ type Query {
     getLoanById(id: ID!): Loan
     getLoansByUserId(id: ID!, page: Int=0, size: Int=20, filterBy: String, sortBy: String): LoanByUserResponse
 
-    listReceipts(page: Int, size: Int, filterBy: String, sortBy: String): [Receipt]
+    listReceipts(page: Int=1, size: Int=20, filterBy: String, sortBy: String): ReceiptPage
     getReceiptById(id: ID!): Receipt
-    getFiscalizedThisWeek(limit: Int = 50): ReceiptResponse
-    getPendingThisWeek(limit: Int = 50): ReceiptResponse
-    getCancelledThisWeek(limit: Int = 50): ReceiptResponse
-    getTodaysTransactions(limit: Int = 50): TodayResponse
+    getFiscalizedThisWeek(page: Int=1, size: Int=20, filterBy: String, sortBy: String): ReceiptPage
+    getPendingThisWeek(page: Int=1, size: Int=20, filterBy: String, sortBy: String): ReceiptPage
+    getCancelledThisWeek(page: Int=1, size: Int=20, filterBy: String, sortBy: String): ReceiptPage
+    getTodaysTransactions(page: Int=1, size: Int=20, filterBy: String, sortBy: String): TodayResponse
     getWeeklyByType: WeeklyByTypeResponse
     getLatestReceipts: [Receipt]
 
@@ -29,8 +29,8 @@ type Mutation {
     publishUser(user: UserInput): User
 
     publishSubsidy(subsidy: SubsidyInput): Subsidy
-    approveSubsidy(id: Int): Subsidy
-    rejectSubsidy(id: Int): Subsidy
+    approveSubsidy(id: ID!): Subsidy
+    rejectSubsidy(id: ID!): Subsidy
 }
 
 type Loan {
@@ -184,6 +184,18 @@ type LoanByUserResponse {
 
 type SubsidyPage {
     content: [Subsidy]
+    totalPages: Int
+    totalElements: Int
+    size: Int
+    number: Int
+    numberOfElements: Int
+    first: Boolean
+    last: Boolean
+    empty: Boolean
+}
+
+type ReceiptPage {
+    content: [Receipt]
     totalPages: Int
     totalElements: Int
     size: Int

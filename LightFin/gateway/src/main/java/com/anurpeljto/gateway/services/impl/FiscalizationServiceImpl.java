@@ -84,10 +84,10 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public List<Receipt> listReceipts(Integer page, Integer size) {
+    public ReceiptResponse listReceipts(Integer page, Integer size, String filterBy, String sortBy) {
         try{
-            String requestUrl = String.format("%s/list?page=%d&size=%d", fiscalizationUrl, page, size);
-            ResponseEntity<List> response = restTemplate.getForEntity(requestUrl, List.class);
+            String requestUrl = String.format("%s/list?page=%d&size=%d&filterBy=%s&sortBy=%s", fiscalizationUrl, page, size, filterBy, sortBy);
+            ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
             return response.getBody();
         } catch(HttpServerErrorException.InternalServerError e){
             return null;
@@ -106,9 +106,9 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public ReceiptResponse getFiscalizedThisWeek(Integer limit) {
+    public ReceiptResponse getFiscalizedThisWeek(Integer page, Integer size, String filterBy, String sortBy) {
         try{
-            String requestUrl = String.format("%s/fiscalized/week?limit=%d", fiscalizationUrl, limit);
+            String requestUrl = String.format("%s/fiscalized/week?page=%d&size=%d&filterBy=%s&sortBy=%s", fiscalizationUrl, page, size, filterBy, sortBy);
             log.info("Fiscalized this week");
             ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
             return response.getBody();
@@ -118,9 +118,9 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public ReceiptResponse getPendingThisWeek(Integer limit) {
+    public ReceiptResponse getPendingThisWeek(Integer page, Integer size, String filterBy, String sortBy) {
         try{
-            String requestUrl = String.format("%s/pending/week?limit=%d", fiscalizationUrl, limit);
+            String requestUrl = String.format("%s/pending/week?page=%d&size=%d&filterBy=%s&sortBy=%s", fiscalizationUrl, page, size, filterBy, sortBy);
             ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
             return response.getBody();
         } catch(HttpServerErrorException.InternalServerError e){
@@ -129,9 +129,9 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public ReceiptResponse getCancelledThisWeek(Integer limit) {
+    public ReceiptResponse getCancelledThisWeek(Integer page, Integer size, String filterBy, String sortBy) {
         try{
-            String requestUrl = String.format("%s/cancelled/week?limit=%d", fiscalizationUrl, limit);
+            String requestUrl = String.format("%s/cancelled/week?page=%d&size=%d&filterBy=%s&sortBy=%s", fiscalizationUrl, page, size, filterBy, sortBy);
             ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
             return response.getBody();
         } catch(HttpServerErrorException.InternalServerError e){

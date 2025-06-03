@@ -12,15 +12,15 @@ public interface FiscalizationService {
 
     void publishReceipt(Receipt receipt);
 
-    List<Receipt> listReceipts(Integer page, Integer size);
+    ReceiptResponse listReceipts(Integer page, Integer size, String filterBy, String sortBy);
 
     Receipt getReceiptById(Integer id);
 
-    ReceiptResponse getFiscalizedThisWeek(Integer limit);
+    ReceiptResponse getFiscalizedThisWeek(Integer page, Integer size, String filterBy, String sortBy);
 
-    ReceiptResponse getPendingThisWeek(Integer limit);
+    ReceiptResponse getPendingThisWeek(Integer page, Integer size, String filterBy, String sortBy);
 
-    ReceiptResponse getCancelledThisWeek(Integer limit);
+    ReceiptResponse getCancelledThisWeek(Integer page, Integer size, String filterBy, String sortBy);
 
     TodayResponse getTodaysTransactions(Integer limit);
 

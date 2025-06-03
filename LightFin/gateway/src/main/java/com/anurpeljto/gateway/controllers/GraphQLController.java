@@ -132,10 +132,12 @@ public class GraphQLController {
 //    Receipts and receipt related methods
 
     @QueryMapping
-    public Iterable<Receipt> listReceipts(
+    public ReceiptResponse listReceipts(
             @Argument("page") final Integer page,
-            @Argument("size") final Integer size) {
-        return this.fiscalizationService.listReceipts(page, size);
+            @Argument("size") final Integer size,
+            @Argument("filterBy") final String filterBy,
+            @Argument("sortBy") final String sortBy) {
+        return this.fiscalizationService.listReceipts(page, size, filterBy, sortBy);
     }
 
     @QueryMapping
@@ -159,23 +161,32 @@ public class GraphQLController {
 
     @QueryMapping
     public ReceiptResponse getFiscalizedThisWeek(
-            @Argument(name="limit") final Integer limit
+            @Argument("page") final Integer page,
+            @Argument("size") final Integer size,
+            @Argument("filterBy") final String filterBy,
+            @Argument("sortBy") final String sortBy
     ) {
-        return fiscalizationService.getFiscalizedThisWeek(limit);
+        return fiscalizationService.getFiscalizedThisWeek(page, size, filterBy, sortBy);
     }
 
     @QueryMapping
     public ReceiptResponse getPendingThisWeek(
-            @Argument(name="limit") final Integer limit
+            @Argument("page") final Integer page,
+            @Argument("size") final Integer size,
+            @Argument("filterBy") final String filterBy,
+            @Argument("sortBy") final String sortBy
     ) {
-        return fiscalizationService.getPendingThisWeek(limit);
+        return fiscalizationService.getPendingThisWeek(page, size, filterBy, sortBy);
     }
 
     @QueryMapping
     public ReceiptResponse getCancelledThisWeek(
-            @Argument(name="limit") final Integer limit
+            @Argument("page") final Integer page,
+            @Argument("size") final Integer size,
+            @Argument("filterBy") final String filterBy,
+            @Argument("sortBy") final String sortBy
     ) {
-        return fiscalizationService.getCancelledThisWeek(limit);
+        return fiscalizationService.getCancelledThisWeek(page, size, filterBy, sortBy);
     }
 
     @QueryMapping

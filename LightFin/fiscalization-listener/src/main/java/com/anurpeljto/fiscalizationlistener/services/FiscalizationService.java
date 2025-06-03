@@ -1,9 +1,12 @@
 package com.anurpeljto.fiscalizationlistener.services;
 
 import com.anurpeljto.fiscalizationlistener.domain.Receipt;
+import com.anurpeljto.fiscalizationlistener.domain.WeeklyByType;
 import com.anurpeljto.fiscalizationlistener.dto.ReceiptResponseDTO;
+import com.anurpeljto.fiscalizationlistener.dto.TodayDTO;
 import com.anurpeljto.fiscalizationlistener.dto.TodayDTOList;
 import com.anurpeljto.fiscalizationlistener.dto.WeeklyByTypeDTO;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -14,17 +17,17 @@ public interface FiscalizationService {
 
     Receipt saveToDatabase(Receipt receipt);
 
-    List<Receipt> getReceipts(Pageable pageable);
+    Page<Receipt> getReceipts(Pageable pageable);
 
     Receipt getReceipt(Integer id);
 
-    ReceiptResponseDTO fiscalizedReceiptsThisWeek(Integer limit);
+    Page<Receipt> fiscalizedReceiptsThisWeek(Pageable pageable);
 
-    ReceiptResponseDTO pendingReceiptsThisWeek(Integer limit);
+    Page<Receipt> pendingReceiptsThisWeek(Pageable pageable);
 
-    ReceiptResponseDTO cancelledReceiptsThisWeek(Integer limit);
+    Page<Receipt> cancelledReceiptsThisWeek(Pageable pageable);
 
-    TodayDTOList getTodaysTransactions(Integer limit);
+    TodayDTOList getTodaysTransactions(Pageable pageable);
 
     WeeklyByTypeDTO getWeeklyByType();
 }

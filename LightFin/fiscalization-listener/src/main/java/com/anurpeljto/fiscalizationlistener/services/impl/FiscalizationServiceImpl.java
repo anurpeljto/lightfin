@@ -13,6 +13,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -56,8 +58,8 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public List<Receipt> getReceipts(Pageable pageable){
-        return this.fiscalizationRepository.findAll(pageable).getContent();
+    public Page<Receipt> getReceipts(Pageable pageable){
+        return this.fiscalizationRepository.findAll(pageable);
     }
 
     @Override
@@ -66,31 +68,31 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public ReceiptResponseDTO fiscalizedReceiptsThisWeek(Integer limit) {
+    public Page<Receipt> fiscalizedReceiptsThisWeek(Pageable pageable) {
         OffsetDateTime today = OffsetDateTime.now();
         OffsetDateTime startOfWeek = today.minusDays(7);
-        List<Receipt> receipts = this.fiscalizationRepository.findFiscalizedByThisWeek(startOfWeek, today, limit);
-        return new ReceiptResponseDTO(receipts);
+        Page<Receipt> receipts = this.fiscalizationRepository.findFiscalizedByThisWeek(startOfWeek, today, pageable);
+        return receipts;
     }
 
     @Override
-    public ReceiptResponseDTO pendingReceiptsThisWeek(Integer limit) {
+    public Page<Receipt> pendingReceiptsThisWeek(Pageable pageable) {
         OffsetDateTime today = OffsetDateTime.now();
         OffsetDateTime startOfWeek = today.minusDays(7);
-        List<Receipt> receipts = this.fiscalizationRepository.findPendingByThisWeek(startOfWeek, today, limit);
-        return new ReceiptResponseDTO(receipts);
+        Page<Receipt> receipts = this.fiscalizationRepository.findPendingByThisWeek(startOfWeek, today, pageable);
+        return receipts;
     }
 
     @Override
-    public ReceiptResponseDTO cancelledReceiptsThisWeek(Integer limit) {
+    public Page<Receipt> cancelledReceiptsThisWeek(Pageable pageable) {
         OffsetDateTime today = OffsetDateTime.now();
         OffsetDateTime startOfWeek = today.minusDays(7);
-        List<Receipt> receipts = this.fiscalizationRepository.findCancelledByThisWeek(startOfWeek, today, limit);
-        return new ReceiptResponseDTO(receipts);
+        Page<Receipt> receipts = this.fiscalizationRepository.findCancelledByThisWeek(startOfWeek, today, pageable);
+        return receipts;
     }
 
     @Override
-    public TodayDTOList getTodaysTransactions(Integer limit) {
+    public TodayDTOList getTodaysTransactions(Pageable pageable) {
         ZoneOffset offset = OffsetDateTime.now().getOffset();
 
         OffsetDateTime now = OffsetDateTime.now();
@@ -99,7 +101,7 @@ public class FiscalizationServiceImpl implements FiscalizationService {
         OffsetDateTime startOfDay = today.atStartOfDay().atOffset(offset);
         OffsetDateTime endOfDay = today.plusDays(1).atStartOfDay().atOffset(offset);
 
-        List<TodayDTO> receipts = this.fiscalizationRepository.todaysTransactions(startOfDay, endOfDay, limit);
+        Page<TodayDTO> receipts = this.fiscalizationRepository.todaysTransactions(startOfDay, endOfDay, pageable);
         return new TodayDTOList(receipts);
     }
 
