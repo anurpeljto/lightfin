@@ -149,7 +149,7 @@ enum LoanStatus {
 
 enum SubsidyStatus {
     PENDING
-    APPROVED
+    ACCEPTED
     REJECTED
 }
 

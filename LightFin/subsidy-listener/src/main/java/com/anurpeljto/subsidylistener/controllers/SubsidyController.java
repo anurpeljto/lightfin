@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,5 +54,23 @@ public class SubsidyController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
         Page<Subsidy> subsidies = subsidyService.getSubsidiesByUserId(id, pageable);
         return new SubsidyPageDTO(subsidies);
+    }
+
+    @GetMapping(path = "/user/{id}/report", produces = "application/pdf")
+    public ResponseEntity<byte[]> getSubsidyReport(
+            @PathVariable final Integer id,
+            @RequestParam final String first_name,
+            @RequestParam final String last_name,
+            @RequestParam final String email
+    ) {
+        byte[] pdfFile =  subsidyService.generateSubsidyReport(id, first_name, last_name, email);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("subsidy_report_user" + first_name + "_" + last_name + ".pdf")
+                .build());
+
+        return new ResponseEntity<>(pdfFile, headers, HttpStatus.OK);
     }
 }

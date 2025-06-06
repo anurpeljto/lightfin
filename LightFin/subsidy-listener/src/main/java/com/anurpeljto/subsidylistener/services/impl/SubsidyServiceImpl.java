@@ -5,11 +5,17 @@ import com.anurpeljto.subsidylistener.exceptions.SubsidyMissingException;
 import com.anurpeljto.subsidylistener.model.SubsidyStatus;
 import com.anurpeljto.subsidylistener.repositories.SubsidyRepository;
 import com.anurpeljto.subsidylistener.services.SubsidyService;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import com.lowagie.text.Document;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +57,7 @@ public class SubsidyServiceImpl implements SubsidyService {
             );
         }
 
-        subsidy.setStatus(SubsidyStatus.APPROVED);
+        subsidy.setStatus(SubsidyStatus.ACCEPTED);
         Date now = new Date();
         subsidy.setApprovalDate(now);
         subsidyRepository.save(subsidy);
@@ -88,5 +94,39 @@ public class SubsidyServiceImpl implements SubsidyService {
     @Override
     public Page<Subsidy> getSubsidiesByUserId(Integer id, Pageable pageable){
         return subsidyRepository.findByRecipientId(id, pageable);
+    }
+
+    @Override
+    public byte[] generateSubsidyReport(Integer id, String first_name, String last_name, String email){
+        List<Subsidy> subsidies = subsidyRepository.findAll();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Document document = new Document();
+        PdfWriter.getInstance(document, out);
+        document.open();
+
+        document.add(new Paragraph("Subsidy report for " + first_name + " " + last_name));
+        Paragraph emailParagraph = new Paragraph("Email: " + email);
+        emailParagraph.setSpacingAfter(10f);
+        document.add(emailParagraph);
+
+        PdfPTable table = new PdfPTable(5);
+        table.addCell("Subsidy ID");
+        table.addCell("Amount");
+        table.addCell("Status");
+        table.addCell("Approved Date");
+        table.addCell("Valid Until");
+
+        for (Subsidy subsidy : subsidies) {
+            table.addCell(String.valueOf(subsidy.getId()));
+            table.addCell(String.valueOf(subsidy.getAmount()));
+            table.addCell(String.valueOf(subsidy.getStatus()));
+            table.addCell(String.valueOf(subsidy.getApprovalDate()));
+            table.addCell(String.valueOf(subsidy.getValid_until()));
+        }
+
+        document.add(table);
+        document.close();
+
+        return out.toByteArray();
     }
 }
