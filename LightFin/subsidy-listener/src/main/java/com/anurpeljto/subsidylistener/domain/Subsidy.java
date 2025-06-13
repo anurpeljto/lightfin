@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.Date;
 
 @Data
@@ -38,4 +39,5 @@ public class Subsidy {
 
     private SubsidyStatus status;
 
+    private OffsetDateTime timestamp;
 }

@@ -27,8 +27,13 @@ public class SubsidyController {
     }
 
     @GetMapping(path = "/list")
-    public List<Subsidy> getSubsidies() {
-        return subsidyService.getSubsidies();
+    public SubsidyPageDTO getSubsidies(
+            @RequestParam("page") Integer page,
+            @RequestParam("size") Integer size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Subsidy> subsidies = subsidyService.getSubsidies(pageable);
+        return new SubsidyPageDTO(subsidies);
     }
 
     @GetMapping(path = "/subsidy/{id}")
@@ -72,5 +77,25 @@ public class SubsidyController {
                 .build());
 
         return new ResponseEntity<>(pdfFile, headers, HttpStatus.OK);
+    }
+
+    @GetMapping(path="/pending")
+    public SubsidyPageDTO getPendingSubsidies(
+            @RequestParam("page") Integer page,
+            @RequestParam("size") Integer size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Subsidy> subsidies = subsidyService.getPendingSubsidies(pageable);
+        return new SubsidyPageDTO(subsidies);
+    }
+
+    @GetMapping("/week")
+    public SubsidyPageDTO getWeeklySubsidies(
+            @RequestParam("page") Integer page,
+            @RequestParam("size") Integer size
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Subsidy> subsidies = subsidyService.getWeeklySubsidies(pageable);
+        return new SubsidyPageDTO(subsidies);
     }
 }

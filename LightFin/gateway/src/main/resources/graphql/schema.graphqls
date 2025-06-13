@@ -15,9 +15,11 @@ type Query {
     listUsers(page: Int, size: Int): [User]
     getUserById(id: Int!): User
 
-    listSubsidies(page: Int, size: Int, filterBy: String, sortBy: String): [Subsidy]
+    listSubsidies(page: Int, size: Int, filterBy: String, sortBy: String): SubsidyPage
     getSubsidyById(id: ID!): Subsidy
     getSubsidiesByUserId(id: ID!, page: Int, size: Int, filterBy: String, sortBy: String): SubsidyPage
+    getPendingSubsidies(page: Int=1, size: Int=10000): SubsidyPage
+    getWeeklySubsidies(page: Int=1, size: Int=10000): SubsidyPage
 }
 
 type Mutation {
@@ -132,6 +134,7 @@ type Subsidy {
     approvalDate: String
     validUntil: String
     status: SubsidyStatus
+    timestamp: String
 }
 
 input SubsidyInput {

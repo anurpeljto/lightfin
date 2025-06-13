@@ -2,12 +2,10 @@ package com.anurpeljto.gateway.domain.subsidy;
 
 import com.anurpeljto.gateway.model.SubsidyStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.Date;
 
 @Data
@@ -37,4 +35,5 @@ public class Subsidy {
 
     private SubsidyStatus status;
 
+    private OffsetDateTime timestamp;
 }

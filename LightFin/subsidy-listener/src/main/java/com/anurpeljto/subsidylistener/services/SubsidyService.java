@@ -16,11 +16,15 @@ public interface SubsidyService {
 
     void rejectSubsidy(Integer id);
 
-    List<Subsidy> getSubsidies();
+    Page<Subsidy> getSubsidies(Pageable pageable);
 
     Subsidy getSubsidyById(Integer id);
 
     Page<Subsidy> getSubsidiesByUserId(Integer id, Pageable pageable);
 
     byte[] generateSubsidyReport(Integer id, String first_name, String last_name, String email);
+
+    Page<Subsidy> getPendingSubsidies(Pageable pageable);
+
+    Page<Subsidy> getWeeklySubsidies(Pageable pageable);
 }

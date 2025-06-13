@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface SubsidyService {
 
-    List<Subsidy> listSubsidies(Integer page, Integer size);
+    SubsidyPageDTO listSubsidies(Integer page, Integer size);
 
     Subsidy getSubsidyById(Integer id);
 
@@ -23,4 +23,8 @@ public interface SubsidyService {
     void rejectSubsidy(Integer id);
 
     SubsidyPageDTO getSubsidiesByUserId(Integer customerId, Integer page, Integer size, String filterBy, String sortBy);
+
+    SubsidyPageDTO getPendingSubsidies(Integer page, Integer size);
+
+    SubsidyPageDTO getWeeklySubsidies(Integer page, Integer size);
 }

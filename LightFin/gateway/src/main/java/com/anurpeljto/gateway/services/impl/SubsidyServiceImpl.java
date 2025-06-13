@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,10 +41,10 @@ public class SubsidyServiceImpl implements SubsidyService {
         this.restTemplate = restTemplate;
     }
 
-    public List<Subsidy> listSubsidies(Integer page, Integer size) {
+    public SubsidyPageDTO listSubsidies(Integer page, Integer size) {
         try{
             String requestUrl = String.format("%s/list?page=%d&size=%d", subsidyUrl, page, size);
-            ResponseEntity<List> response = restTemplate.getForEntity(requestUrl, List.class);
+            ResponseEntity<SubsidyPageDTO> response = restTemplate.getForEntity(requestUrl, SubsidyPageDTO.class);
             return response.getBody();
         } catch(HttpServerErrorException.InternalServerError e){
             return null;
@@ -53,6 +54,8 @@ public class SubsidyServiceImpl implements SubsidyService {
     @Override
     public void publishSubsidy(Subsidy subsidy){
         try {
+            OffsetDateTime now = OffsetDateTime.now();
+            subsidy.setTimestamp(now);
             String payload = objectMapper.writeValueAsString(subsidy);
             kafkaTemplate.send("subsidy.published", payload);
         } catch (JsonProcessingException ex){
@@ -93,6 +96,28 @@ public class SubsidyServiceImpl implements SubsidyService {
             ResponseEntity<SubsidyPageDTO> response = restTemplate.getForEntity(reqUrl, SubsidyPageDTO.class);
             return response.getBody();
         } catch(HttpServerErrorException.InternalServerError e){
+            return null;
+        }
+    }
+
+    @Override
+    public SubsidyPageDTO getPendingSubsidies(Integer page, Integer size) {
+        try{
+            String req = String.format("%s/pending?page=%d&size=%d", subsidyUrl, page, size);
+            ResponseEntity<SubsidyPageDTO> response = restTemplate.getForEntity(req, SubsidyPageDTO.class);
+            return response.getBody();
+        }catch(HttpServerErrorException.InternalServerError e){
+            return null;
+        }
+    }
+
+    @Override
+    public SubsidyPageDTO getWeeklySubsidies(Integer page, Integer size) {
+        try{
+            String req = String.format("%s/week?page=%d&size=%d", subsidyUrl, page, size);
+            ResponseEntity<SubsidyPageDTO> response = restTemplate.getForEntity(req, SubsidyPageDTO.class);
+            return response.getBody();
+        }catch(HttpServerErrorException.InternalServerError e){
             return null;
         }
     }

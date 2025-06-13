@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -82,8 +83,8 @@ public class SubsidyServiceImpl implements SubsidyService {
     }
 
     @Override
-    public List<Subsidy> getSubsidies() {
-        return subsidyRepository.findAll();
+    public Page<Subsidy> getSubsidies(Pageable pageable) {
+        return subsidyRepository.findAll(pageable);
     }
 
     @Override
@@ -128,5 +129,16 @@ public class SubsidyServiceImpl implements SubsidyService {
         document.close();
 
         return out.toByteArray();
+    }
+    @Override
+    public Page<Subsidy> getPendingSubsidies(Pageable pageable) {
+        return subsidyRepository.findByStatus(SubsidyStatus.PENDING, pageable);
+    }
+
+    @Override
+    public Page<Subsidy> getWeeklySubsidies(Pageable pageable) {
+        OffsetDateTime today = OffsetDateTime.now();
+        OffsetDateTime startOfWeek = today.minusDays(7);
+        return subsidyRepository.getWeeklySubsidies(startOfWeek, today, pageable);
     }
 }

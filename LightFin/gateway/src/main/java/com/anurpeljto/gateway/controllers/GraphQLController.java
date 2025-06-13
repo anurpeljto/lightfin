@@ -239,7 +239,7 @@ public class GraphQLController {
     }
 
     @QueryMapping
-    public Iterable<Subsidy> listSubsidies(
+    public SubsidyPageDTO listSubsidies(
             @Argument("page") final Integer page,
             @Argument("size") final Integer size
     ) {
@@ -291,4 +291,19 @@ public class GraphQLController {
         return subsidy;
     }
 
+    @QueryMapping
+    public SubsidyPageDTO getPendingSubsidies(
+            @Argument("page") final Integer page,
+            @Argument("size") final Integer size
+    ) {
+        return subsidyService.getPendingSubsidies(page, size);
+    }
+
+    @QueryMapping
+    public SubsidyPageDTO getWeeklySubsidies(
+            @Argument("page") final Integer page,
+            @Argument("size") final Integer size
+    ){
+        return subsidyService.getWeeklySubsidies(page, size);
+    }
 }
