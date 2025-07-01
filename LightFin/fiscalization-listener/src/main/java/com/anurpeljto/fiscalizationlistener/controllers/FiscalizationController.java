@@ -39,7 +39,7 @@ public class FiscalizationController {
             @RequestParam(required = false) final String sortBy
     ) {
         log.info("Params: {}, {}, {} ,{}", page, size, filterBy, sortBy);
-        Pageable pageable = PageableCreator.createPageable(page, size, filterBy, sortBy, false);
+        Pageable pageable = PageableCreator.createPageable(page, size, filterBy, sortBy);
         log.info("pageable: {}", pageable);
         Page<Receipt> receipts = fiscalizationService.getReceipts(pageable);
         return new ReceiptResponseDTO(receipts);
@@ -59,7 +59,7 @@ public class FiscalizationController {
             @RequestParam(required = false) final String filterBy,
             @RequestParam(required = false) final String sortBy
     ){
-        Pageable pageable = PageableCreator.createPageable(page, size, filterBy, sortBy, false);
+        Pageable pageable = PageableCreator.createPageable(page, size, filterBy, sortBy);
         Page<Receipt> receipts = fiscalizationService.fiscalizedReceiptsThisWeek(pageable);
         return new ReceiptResponseDTO(receipts);
     }
@@ -71,7 +71,7 @@ public class FiscalizationController {
             @RequestParam(required = false) final String filterBy,
             @RequestParam(required = false) final String sortBy
     ){
-        Pageable pageable = PageableCreator.createPageable(page, size, filterBy, sortBy, false);
+        Pageable pageable = PageableCreator.createPageable(page, size, filterBy, sortBy);
         Page<Receipt> receipts = fiscalizationService.pendingReceiptsThisWeek(pageable);
         return new ReceiptResponseDTO(receipts);
     }
@@ -83,20 +83,15 @@ public class FiscalizationController {
             @RequestParam(required = false) final String filterBy,
             @RequestParam(required = false) final String sortBy
     ){
-        Pageable pageable = PageableCreator.createPageable(page, size, filterBy, sortBy, false);
+        Pageable pageable = PageableCreator.createPageable(page, size, filterBy, sortBy);
         Page<Receipt> receipts = fiscalizationService.cancelledReceiptsThisWeek(pageable);
         return new ReceiptResponseDTO(receipts);
     }
 
     @GetMapping(path = "/today")
-    public TodayDTOList getTodayReceipts(
-            @RequestParam(required = false) final Integer page,
-            @RequestParam(required = false) final Integer size,
-            @RequestParam(required = false) final String filterBy,
-            @RequestParam(required = false) final String sortBy
-    ){
-        Pageable pageable = PageableCreator.createPageable(page, size, filterBy, sortBy, true);
-        TodayDTOList receipts = fiscalizationService.getTodaysTransactions(pageable);
+    public TodayDTOList getTodayReceipts(){
+        TodayDTOList receipts = fiscalizationService.getTodaysTransactions();
+//        TodayDTOList receiptList = new TodayDTOList(receipts);
         return receipts;
     }
 

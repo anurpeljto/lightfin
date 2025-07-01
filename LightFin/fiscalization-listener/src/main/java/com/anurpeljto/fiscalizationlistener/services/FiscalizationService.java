@@ -27,7 +27,7 @@ public interface FiscalizationService {
 
     Page<Receipt> cancelledReceiptsThisWeek(Pageable pageable);
 
-    TodayDTOList getTodaysTransactions(Pageable pageable);
+    TodayDTOList getTodaysTransactions();
 
     WeeklyByTypeDTO getWeeklyByType();
 }

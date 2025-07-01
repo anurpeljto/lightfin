@@ -167,11 +167,7 @@ type TodayDTOList {
 }
 
 type TodayResponse {
-    todayDTOList: [TodayDTOList],
-    totalElements: Int,
-    totalPages: Int,
-    number: Int,
-    size: Int
+    todayDTOList: [TodayDTOList]
 }
 
 type WeeklyByType {

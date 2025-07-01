@@ -45,10 +45,9 @@ public interface FiscalizationRepository extends JpaRepository<Receipt, Integer>
     GROUP BY r.status
     ORDER BY r.status
 """)
-    Page<TodayDTO> todaysTransactions(
+    List<TodayDTO> todaysTransactions(
             @Param("startOfDay") OffsetDateTime startOfDay,
-            @Param("endOfDay") OffsetDateTime endOfDay,
-            Pageable pageable
+            @Param("endOfDay") OffsetDateTime endOfDay
     );
 
     @Query("SELECT new com.anurpeljto.fiscalizationlistener.domain.WeeklyByType(r.paymentType, COUNT(r)) " +

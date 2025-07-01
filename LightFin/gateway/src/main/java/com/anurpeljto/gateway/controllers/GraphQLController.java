@@ -10,7 +10,6 @@ import com.anurpeljto.gateway.domain.user.User;
 import com.anurpeljto.gateway.dto.ReceiptResponse;
 import com.anurpeljto.gateway.dto.SubsidyPageDTO;
 import com.anurpeljto.gateway.dto.TodayDTOList;
-import com.anurpeljto.gateway.dto.TodayResponse;
 import com.anurpeljto.gateway.dto.WeeklyByTypeDTO;
 import com.anurpeljto.gateway.dto.loan.LoanResponseDto;
 import com.anurpeljto.gateway.exceptions.InvalidReceiptException;

@@ -92,7 +92,7 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public TodayDTOList getTodaysTransactions(Pageable pageable) {
+    public TodayDTOList getTodaysTransactions() {
         ZoneOffset offset = OffsetDateTime.now().getOffset();
 
         OffsetDateTime now = OffsetDateTime.now();
@@ -101,8 +101,8 @@ public class FiscalizationServiceImpl implements FiscalizationService {
         OffsetDateTime startOfDay = today.atStartOfDay().atOffset(offset);
         OffsetDateTime endOfDay = today.plusDays(1).atStartOfDay().atOffset(offset);
 
-        Page<TodayDTO> receipts = this.fiscalizationRepository.todaysTransactions(startOfDay, endOfDay, pageable);
-        log.info("Total receipts {}", receipts.getTotalElements());
+        List<TodayDTO> receipts = this.fiscalizationRepository.todaysTransactions(startOfDay, endOfDay);
+        log.info("Total receipts {}", receipts.size());
         return new TodayDTOList(receipts);
     }
 
