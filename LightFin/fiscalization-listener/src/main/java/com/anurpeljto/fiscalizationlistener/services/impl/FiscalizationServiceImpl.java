@@ -102,6 +102,7 @@ public class FiscalizationServiceImpl implements FiscalizationService {
         OffsetDateTime endOfDay = today.plusDays(1).atStartOfDay().atOffset(offset);
 
         Page<TodayDTO> receipts = this.fiscalizationRepository.todaysTransactions(startOfDay, endOfDay, pageable);
+        log.info("Total receipts {}", receipts.getTotalElements());
         return new TodayDTOList(receipts);
     }
 

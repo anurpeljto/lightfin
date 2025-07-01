@@ -38,7 +38,13 @@ public interface FiscalizationRepository extends JpaRepository<Receipt, Integer>
             Pageable pageable
     );
 
-    @Query("SELECT new com.anurpeljto.fiscalizationlistener.dto.TodayDTO(r.status, COUNT(r)) FROM Receipt r WHERE r.timestamp BETWEEN :startOfDay AND :endOfDay GROUP BY r.status ORDER BY r.status")
+    @Query("""
+    SELECT new com.anurpeljto.fiscalizationlistener.dto.TodayDTO(r.status, COUNT(r))
+    FROM Receipt r
+    WHERE r.timestamp BETWEEN :startOfDay AND :endOfDay
+    GROUP BY r.status
+    ORDER BY r.status
+""")
     Page<TodayDTO> todaysTransactions(
             @Param("startOfDay") OffsetDateTime startOfDay,
             @Param("endOfDay") OffsetDateTime endOfDay,

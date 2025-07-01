@@ -9,6 +9,7 @@ import com.anurpeljto.gateway.domain.subsidy.SubsidyInput;
 import com.anurpeljto.gateway.domain.user.User;
 import com.anurpeljto.gateway.dto.ReceiptResponse;
 import com.anurpeljto.gateway.dto.SubsidyPageDTO;
+import com.anurpeljto.gateway.dto.TodayDTOList;
 import com.anurpeljto.gateway.dto.TodayResponse;
 import com.anurpeljto.gateway.dto.WeeklyByTypeDTO;
 import com.anurpeljto.gateway.dto.loan.LoanResponseDto;
@@ -190,10 +191,13 @@ public class GraphQLController {
     }
 
     @QueryMapping
-    public TodayResponse getTodaysTransactions(
-            @Argument(name="limit") final Integer limit
+    public TodayDTOList getTodaysTransactions(
+            @Argument("page") final Integer page,
+            @Argument("size") final Integer size,
+            @Argument("filterBy") final String filterBy,
+            @Argument("sortBy") final String sortBy
     ) {
-        return fiscalizationService.getTodaysTransactions(limit);
+        return fiscalizationService.getTodaysTransactions(page, size, filterBy, sortBy);
     }
 
     @QueryMapping

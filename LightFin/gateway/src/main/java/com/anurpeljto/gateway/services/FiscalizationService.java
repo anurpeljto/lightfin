@@ -2,7 +2,7 @@ package com.anurpeljto.gateway.services;
 
 import com.anurpeljto.gateway.domain.fiscalization.Receipt;
 import com.anurpeljto.gateway.dto.ReceiptResponse;
-import com.anurpeljto.gateway.dto.TodayResponse;
+import com.anurpeljto.gateway.dto.TodayDTOList;
 import com.anurpeljto.gateway.dto.WeeklyByTypeDTO;
 import org.springframework.data.domain.Pageable;
 
@@ -22,7 +22,7 @@ public interface FiscalizationService {
 
     ReceiptResponse getCancelledThisWeek(Integer page, Integer size, String filterBy, String sortBy);
 
-    TodayResponse getTodaysTransactions(Integer limit);
+    TodayDTOList getTodaysTransactions(Integer page, Integer size, String filterBy, String sortBy);
 
     WeeklyByTypeDTO getWeeklyByType();
 }

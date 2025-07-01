@@ -4,7 +4,7 @@ import com.anurpeljto.gateway.domain.fiscalization.Item;
 import com.anurpeljto.gateway.domain.fiscalization.Receipt;
 import com.anurpeljto.gateway.domain.loan.Loan;
 import com.anurpeljto.gateway.dto.ReceiptResponse;
-import com.anurpeljto.gateway.dto.TodayResponse;
+import com.anurpeljto.gateway.dto.TodayDTOList;
 import com.anurpeljto.gateway.dto.WeeklyByTypeDTO;
 import com.anurpeljto.gateway.dto.WeeklyByTypeResponse;
 import com.anurpeljto.gateway.dto.loan.LoanResponseDto;
@@ -140,10 +140,10 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public TodayResponse getTodaysTransactions(Integer limit) {
+    public TodayDTOList getTodaysTransactions(Integer page, Integer size, String filterBy, String sortBy) {
         try{
-            String requestUrl = String.format("%s/today?limit=%d", fiscalizationUrl, limit);
-            ResponseEntity<TodayResponse> response = restTemplate.getForEntity(requestUrl, TodayResponse.class);
+            String requestUrl = String.format("%s/today?page=%d&size=%d&sortBy=%s&orderBy=%s", fiscalizationUrl, page, size, filterBy, sortBy);
+            ResponseEntity<TodayDTOList> response = restTemplate.getForEntity(requestUrl, TodayDTOList.class);
             String value = objectMapper.writeValueAsString(response.getBody());
             log.info("Today transactions: {}", value);
             return response.getBody();
