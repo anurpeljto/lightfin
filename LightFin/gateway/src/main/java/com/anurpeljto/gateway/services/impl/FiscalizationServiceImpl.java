@@ -160,4 +160,25 @@ public class FiscalizationServiceImpl implements FiscalizationService {
         ResponseEntity<WeeklyByTypeDTO> response = restTemplate.getForEntity(requestUrl, WeeklyByTypeDTO.class);
         return response.getBody();
     }
+
+    @Override
+    public Integer getTodaysTransactionsCount() {
+        String requestUrl = String.format("%s/today/count", fiscalizationUrl);
+        ResponseEntity<Integer> response = restTemplate.getForEntity(requestUrl, Integer.class);
+        return response.getBody();
+    }
+
+    @Override
+    public Integer getWeeklyTransactionsCount() {
+        String requestUrl = String.format("%s/week/count", fiscalizationUrl);
+        ResponseEntity<Integer> response = restTemplate.getForEntity(requestUrl, Integer.class);
+        return response.getBody();
+    }
+
+    @Override
+    public Integer getMonthlyTransactionsCount() {
+        String requestUrl = String.format("%s/month/count", fiscalizationUrl);
+        ResponseEntity<Integer> response = restTemplate.getForEntity(requestUrl, Integer.class);
+        return response.getBody();
+    }
 }

@@ -200,6 +200,21 @@ public class GraphQLController {
     }
 
     @QueryMapping
+    public Integer getTodaysTransactionsCount(){
+        return fiscalizationService.getTodaysTransactionsCount();
+    }
+
+    @QueryMapping
+    public Integer getWeeklyTransactionsCount(){
+        return fiscalizationService.getWeeklyTransactionsCount();
+    }
+
+    @QueryMapping
+    public Integer getMonthlyTransactionsCount() {
+        return fiscalizationService.getMonthlyTransactionsCount();
+    }
+
+    @QueryMapping
     public WeeklyByTypeDTO getWeeklyByType() {
         return fiscalizationService.getWeeklyByType();
     }

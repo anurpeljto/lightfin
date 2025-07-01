@@ -30,4 +30,10 @@ public interface FiscalizationService {
     TodayDTOList getTodaysTransactions();
 
     WeeklyByTypeDTO getWeeklyByType();
+
+    Integer todaysTransactionsCount();
+
+    Integer weeklyTransactionsCount();
+
+    Integer monthlyTransactionsCount();
 }

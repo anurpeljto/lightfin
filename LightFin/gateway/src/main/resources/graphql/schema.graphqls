@@ -11,6 +11,9 @@ type Query {
     getTodaysTransactions(page: Int=1, size: Int=20, filterBy: String, sortBy: String): TodayResponse
     getWeeklyByType: WeeklyByTypeResponse
     getLatestReceipts: [Receipt]
+    getTodaysTransactionsCount: Int
+    getWeeklyTransactionsCount: Int
+    getMonthlyTransactionsCount: Int
 
     listUsers(page: Int, size: Int): [User]
     getUserById(id: Int!): User

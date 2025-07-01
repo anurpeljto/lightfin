@@ -99,4 +99,19 @@ public class FiscalizationController {
     public WeeklyByTypeDTO getWeeklyReceipts(){
         return this.fiscalizationService.getWeeklyByType();
     }
+
+    @GetMapping(path = "/today/count")
+    public Integer getTodaysTransactionsCount() {
+        return this.fiscalizationService.todaysTransactionsCount();
+    }
+
+    @GetMapping(path = "/week/count")
+    public Integer weeklyTransactionsCount() {
+        return this.fiscalizationService.weeklyTransactionsCount();
+    }
+
+    @GetMapping(path = "/month/count")
+    public Integer monthlyTransactionsCount() {
+        return this.fiscalizationService.monthlyTransactionsCount();
+    }
 }

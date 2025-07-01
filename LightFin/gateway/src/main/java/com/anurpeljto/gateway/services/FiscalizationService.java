@@ -25,4 +25,10 @@ public interface FiscalizationService {
     TodayDTOList getTodaysTransactions(Integer page, Integer size, String filterBy, String sortBy);
 
     WeeklyByTypeDTO getWeeklyByType();
+
+    Integer getTodaysTransactionsCount();
+
+    Integer getWeeklyTransactionsCount();
+
+    Integer getMonthlyTransactionsCount();
 }

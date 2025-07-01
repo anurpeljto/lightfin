@@ -114,4 +114,44 @@ public class FiscalizationServiceImpl implements FiscalizationService {
         List<WeeklyByType> weeklyData = this.fiscalizationRepository.weeklyByType(startOfWeek, today);
         return new WeeklyByTypeDTO(weeklyData);
     }
+
+    @Override
+    public Integer todaysTransactionsCount() {
+        ZoneOffset offset = OffsetDateTime.now().getOffset();
+
+        OffsetDateTime now = OffsetDateTime.now();
+        LocalDate today = now.toLocalDate();
+
+        OffsetDateTime startOfDay = today.atStartOfDay().atOffset(offset);
+        OffsetDateTime endOfDay = today.plusDays(1).atStartOfDay().atOffset(offset);
+
+        Integer count = this.fiscalizationRepository.todaysTransactionsCount(startOfDay, endOfDay);
+        return count;
+    }
+
+    @Override
+    public Integer weeklyTransactionsCount() {
+        OffsetDateTime today = OffsetDateTime.now();
+        OffsetDateTime startOfWeek = today.minusDays(7);
+
+        Integer count = this.fiscalizationRepository.weeklyTransactionsCount(startOfWeek, today);
+        return count;
+    }
+
+    @Override
+    public Integer monthlyTransactionsCount() {
+        ZoneOffset offset = OffsetDateTime.now().getOffset();
+        OffsetDateTime now = OffsetDateTime.now();
+
+        LocalDate today = now.toLocalDate();
+
+        LocalDate startOfMonthDate = today.withDayOfMonth(1);
+        OffsetDateTime startOfMonth = startOfMonthDate.atStartOfDay().atOffset(offset);
+
+        LocalDate startOfNextMonthDate = today.plusMonths(1).withDayOfMonth(1);
+        OffsetDateTime endOfMonth = startOfNextMonthDate.atStartOfDay().atOffset(offset);
+
+        Integer count = this.fiscalizationRepository.monthlyTransactionsCount(startOfMonth, endOfMonth);
+        return count;
+    }
 }

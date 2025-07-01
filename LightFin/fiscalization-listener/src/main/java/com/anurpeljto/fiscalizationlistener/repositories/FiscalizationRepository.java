@@ -50,6 +50,12 @@ public interface FiscalizationRepository extends JpaRepository<Receipt, Integer>
             @Param("endOfDay") OffsetDateTime endOfDay
     );
 
+    @Query("SELECT COUNT(r) FROM Receipt r WHERE r.timestamp BETWEEN :startOfDay AND :endOfDay")
+    Integer todaysTransactionsCount(
+            @Param("startOfDay") OffsetDateTime startOfDay,
+            @Param("endOfDay") OffsetDateTime endOfDay
+    );
+
     @Query("SELECT new com.anurpeljto.fiscalizationlistener.domain.WeeklyByType(r.paymentType, COUNT(r)) " +
             "FROM Receipt r " +
             "WHERE r.timestamp BETWEEN :startOfWeek AND :today " +
@@ -58,4 +64,17 @@ public interface FiscalizationRepository extends JpaRepository<Receipt, Integer>
             @Param("startOfWeek") OffsetDateTime startOfWeek,
             @Param("today") OffsetDateTime today
     );
+
+    @Query("SELECT COUNT(r) FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek")
+    Integer weeklyTransactionsCount(
+            @Param("startOfWeek") OffsetDateTime startOfWeek,
+            @Param("endOfWeek") OffsetDateTime endOfWeek
+    );
+
+    @Query("SELECT COUNT(r) FROM Receipt r WHERE r.timestamp BETWEEN :startOfMonth AND :endOfMonth")
+    Integer monthlyTransactionsCount(
+            @Param("startOfMonth") OffsetDateTime startOfMonth,
+            @Param("endOfMonth") OffsetDateTime endOfMonth
+    );
+
 }
