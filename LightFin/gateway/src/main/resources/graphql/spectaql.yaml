@@ -1,0 +1,5 @@
+introspection:
+  url: http://localhost:8080/graphql
+
+siteName: "LightFin API Docs"
+outputDir: ./docs
