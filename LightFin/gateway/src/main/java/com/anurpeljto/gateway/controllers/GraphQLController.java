@@ -23,6 +23,7 @@ import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -222,6 +223,11 @@ public class GraphQLController {
     @QueryMapping
     public List<Receipt> getLatestReceipts() {
         return transactionBuffer.getTransactions();
+    }
+
+    @QueryMapping
+    public Float getAverageReceiptsPerDay(){
+        return fiscalizationService.getAverageReceiptsPerDay();
     }
 //    Users and user related methods
 

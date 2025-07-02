@@ -12,6 +12,10 @@ import com.anurpeljto.fiscalizationlistener.services.FiscalizationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,12 +23,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -153,5 +162,62 @@ public class FiscalizationServiceImpl implements FiscalizationService {
 
         Integer count = this.fiscalizationRepository.monthlyTransactionsCount(startOfMonth, endOfMonth);
         return count;
+    }
+
+    @Override
+    public byte[] generateReceipt(Integer id){
+        Optional<Receipt> receiptOptional = fiscalizationRepository.findById(id);
+        if(receiptOptional.isEmpty()){
+            throw new RuntimeException("Receipt id invalid");
+        }
+        Receipt receipt = receiptOptional.get();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Document document = new Document();
+        PdfWriter.getInstance(document, out);
+        document.open();
+
+        document.add(new Paragraph("Receipt"));
+        Paragraph issuerParagraph = new Paragraph("Issued by: " + receipt.getSignature());
+        document.add(issuerParagraph);
+
+        LocalDateTime localDateTime = receipt.getTimestamp().toLocalDateTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        Paragraph timestamp = new Paragraph("Time of issuing: " + localDateTime.format(formatter));
+        document.add(timestamp);
+
+        Paragraph tax = new Paragraph("Tax: " + receipt.getTaxAmount());
+        document.add(tax);
+
+        Paragraph total = new Paragraph("Total: " + receipt.getTotal());
+        document.add(total);
+
+        Paragraph fiscalCode = new Paragraph("Fiscal Code: " + receipt.getFiscalCode());
+        fiscalCode.setSpacingAfter(10f);
+        document.add(fiscalCode);
+
+        PdfPTable table = new PdfPTable(5);
+        table.addCell("Item Id");
+        table.addCell("Name");
+        table.addCell("Unit price");
+        table.addCell("Quantity");
+        table.addCell("Total before tax");
+
+        for (Item item : receipt.getItems()) {
+            table.addCell(String.valueOf(item.getId()));
+            table.addCell(String.valueOf(item.getName()));
+            table.addCell(String.valueOf(item.getUnitPrice()));
+            table.addCell(String.valueOf(item.getQuantity()));
+            table.addCell(String.valueOf((item.getQuantity())*item.getUnitPrice()));
+        }
+
+        document.add(table);
+        document.close();
+
+        return out.toByteArray();
+    }
+
+    @Override
+    public Float averageReceiptsPerDay() {
+        return fiscalizationRepository.averageTransactionsPerDay();
     }
 }

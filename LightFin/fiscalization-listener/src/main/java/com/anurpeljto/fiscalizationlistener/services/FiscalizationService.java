@@ -36,4 +36,8 @@ public interface FiscalizationService {
     Integer weeklyTransactionsCount();
 
     Integer monthlyTransactionsCount();
+
+    byte[] generateReceipt(Integer id);
+
+    Float averageReceiptsPerDay();
 }

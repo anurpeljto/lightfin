@@ -181,4 +181,11 @@ public class FiscalizationServiceImpl implements FiscalizationService {
         ResponseEntity<Integer> response = restTemplate.getForEntity(requestUrl, Integer.class);
         return response.getBody();
     }
+
+    @Override
+    public Float getAverageReceiptsPerDay() {
+        String req = String.format("%s/average", fiscalizationUrl);
+        ResponseEntity<Float> response = restTemplate.getForEntity(req, Float.class);
+        return response.getBody();
+    }
 }

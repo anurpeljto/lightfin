@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -88,6 +89,21 @@ public class FiscalizationController {
         return new ReceiptResponseDTO(receipts);
     }
 
+    @GetMapping(path = "/receipt/{id}/generate", produces = "application/pdf")
+    public ResponseEntity<byte[]> generateReceipt(
+            @PathVariable final Integer id
+    ){
+        byte[] pdf = fiscalizationService.generateReceipt(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("receipt_" + id.toString() + ".pdf")
+                .build()
+        );
+
+        return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/today")
     public TodayDTOList getTodayReceipts(){
         TodayDTOList receipts = fiscalizationService.getTodaysTransactions();
@@ -113,5 +129,10 @@ public class FiscalizationController {
     @GetMapping(path = "/month/count")
     public Integer monthlyTransactionsCount() {
         return this.fiscalizationService.monthlyTransactionsCount();
+    }
+
+    @GetMapping(path = "/average")
+    public Float averageReceiptsPerDay(){
+        return this.fiscalizationService.averageReceiptsPerDay();
     }
 }

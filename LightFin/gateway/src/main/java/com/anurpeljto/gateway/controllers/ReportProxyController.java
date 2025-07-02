@@ -24,6 +24,9 @@ public class ReportProxyController {
     @Value("${spring.subsidy.url}")
     private String subsidiesMicroserviceUrl;
 
+    @Value("${spring.fiscalization.url}")
+    private String fiscalizationMicroserviceUrl;
+
     @GetMapping("/user-loans/{id}/report")
     public void getUserLoanReport(
             @PathVariable Integer id,
@@ -85,6 +88,33 @@ public class ReportProxyController {
         response.setHeader(
                 "Content-Disposition",
                 "attachment; filename=subsidies_report_user_" + first_name + "_" + last_name + ".pdf"
+        );
+
+        StreamUtils.copy(microserviceResponse.getBody(), response.getOutputStream());
+    }
+
+    @GetMapping(path = "/receipts/{id}/generate")
+    public void generateReceiptReport(
+            @PathVariable final Integer id,
+            HttpServletResponse response
+    ) throws IOException {
+        String microserviceUrl = String.format(
+                "%s/receipt/%d/generate",
+                fiscalizationMicroserviceUrl,
+                id
+        );
+
+        ResponseEntity<byte[]> microserviceResponse = restTemplate.exchange(
+                microserviceUrl,
+                HttpMethod.GET,
+                null,
+                byte[].class
+        );
+
+        response.setContentType("application/pdf");
+        response.setHeader(
+                "Content-Disposition",
+                "attachment; filename=receipt_" + id + "_report_" + ".pdf"
         );
 
         StreamUtils.copy(microserviceResponse.getBody(), response.getOutputStream());

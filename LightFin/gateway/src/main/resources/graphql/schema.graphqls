@@ -14,6 +14,7 @@ type Query {
     getTodaysTransactionsCount: Int
     getWeeklyTransactionsCount: Int
     getMonthlyTransactionsCount: Int
+    getAverageReceiptsPerDay: Float
 
     listUsers(page: Int, size: Int): [User]
     getUserById(id: Int!): User

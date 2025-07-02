@@ -77,4 +77,6 @@ public interface FiscalizationRepository extends JpaRepository<Receipt, Integer>
             @Param("endOfMonth") OffsetDateTime endOfMonth
     );
 
+    @Query(value = "SELECT COUNT(*) / COUNT(DISTINCT DATE(timestamp)) FROM receipts", nativeQuery = true)
+    Float averageTransactionsPerDay();
 }
