@@ -20,11 +20,19 @@ public interface LoanService {
 
     void rejectLoan(Loan loan);
 
-    List<Loan> getLoans(Pageable pageable);
+    Page<Loan> getLoans(Pageable pageable);
 
     Loan getLoanById(Integer id);
 
     Page<Loan> getLoansByUserId(Integer userId, Pageable pageable);
 
     byte[] generateLoanReport(Integer userId, String first_name, String last_name, String email);
+
+    Long getTotalLoans();
+
+    Long getPendingLoans();
+
+    Long getLoansThisWeek();
+
+    Double getAverageLoanAmount();
 }

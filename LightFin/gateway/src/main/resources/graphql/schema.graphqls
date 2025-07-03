@@ -2,6 +2,11 @@ type Query {
     listLoans(page: Int, size: Int, filterBy: String, sortBy: String): [Loan]
     getLoanById(id: ID!): Loan
     getLoansByUserId(id: ID!, page: Int=0, size: Int=20, filterBy: String, sortBy: String): LoanByUserResponse
+    getLoansThisWeek: Int
+    getPendingLoans: Int
+    getLoanAverageAmount: Float
+    getLoans(page: Int=0, size: Int=20, filterBy: String, sortBy: String): LoanResponsePagedDTO
+    getTotalLoans: Int
 
     listReceipts(page: Int=1, size: Int=20, filterBy: String, sortBy: String): ReceiptPage
     getReceiptById(id: ID!): Receipt
@@ -45,6 +50,7 @@ type Loan {
     amount: Int!
     interestRate: Float!
     status: LoanStatus!
+    timestamp: String
 }
 
 type User {
@@ -211,4 +217,16 @@ type ReceiptPage {
     first: Boolean
     last: Boolean
     empty: Boolean
+}
+
+type LoanResponsePagedDTO {
+    loans: [Loan!]!
+    totalPages: Int!
+    totalElements: Int!
+    size: Int!
+    number: Int!
+    numberOfElements: Int!
+    first: Boolean!
+    last: Boolean!
+    empty: Boolean!
 }

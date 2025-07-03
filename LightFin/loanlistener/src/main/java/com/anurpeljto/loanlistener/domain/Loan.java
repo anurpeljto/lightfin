@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.OffsetDateTime;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,4 +32,6 @@ public class Loan {
 
     @Enumerated(EnumType.STRING)
     private LoanStatus status;
+
+    private OffsetDateTime timestamp;
 }

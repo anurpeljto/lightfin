@@ -3,10 +3,12 @@ package com.anurpeljto.loanlistener.controllers;
 import com.anurpeljto.loanlistener.domain.Loan;
 import com.anurpeljto.loanlistener.dto.LoanDto;
 import com.anurpeljto.loanlistener.dto.LoanResponseDto;
+import com.anurpeljto.loanlistener.dto.LoanResponsePagedDTO;
 import com.anurpeljto.loanlistener.exceptions.LoanNotFound;
 import com.anurpeljto.loanlistener.services.LoanService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,7 +31,7 @@ public class LoanController {
     }
 
     @GetMapping(path = "/list")
-    public List<Loan> getLoans(
+    public LoanResponsePagedDTO getLoans(
             @RequestParam(required = false) final Integer page,
             @RequestParam(required = false) final Integer size,
             @RequestParam(required = false) final String filterBy,
@@ -49,8 +51,8 @@ public class LoanController {
         }
 
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(direction, sortField));
-
-        return loanService.getLoans(pageable);
+        Page<Loan> loans = loanService.getLoans(pageable);
+        return new LoanResponsePagedDTO(loans);
     }
 
     @GetMapping(path = "/loan/{id}")
@@ -62,7 +64,7 @@ public class LoanController {
     }
 
     @GetMapping(path = "/loan/user/{id}")
-    public LoanResponseDto getLoans(
+    public LoanResponseDto getLoansByUserId(
             @PathVariable final Integer id,
             @RequestParam(required = false, defaultValue = "0") final Integer page,
             @RequestParam(required = false, defaultValue = "20") final Integer size,
@@ -102,5 +104,25 @@ public class LoanController {
                 .build());
 
         return new ResponseEntity<>(pdfFile, headers, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/loans/week")
+    public Long getLoansThisWeek() {
+        return loanService.getLoansThisWeek();
+    }
+
+    @GetMapping(path = "/loans/pending")
+    public Long getPendingLoans(){
+        return loanService.getPendingLoans();
+    }
+
+    @GetMapping(path = "/loans/average")
+    public Double getAverageLoanAmount(){
+        return loanService.getAverageLoanAmount();
+    }
+
+    @GetMapping(path = "/loans/total")
+    public Long getTotalLoans(){
+        return loanService.getTotalLoans();
     }
 }

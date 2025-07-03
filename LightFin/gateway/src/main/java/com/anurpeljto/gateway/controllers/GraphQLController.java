@@ -12,6 +12,7 @@ import com.anurpeljto.gateway.dto.SubsidyPageDTO;
 import com.anurpeljto.gateway.dto.TodayDTOList;
 import com.anurpeljto.gateway.dto.WeeklyByTypeDTO;
 import com.anurpeljto.gateway.dto.loan.LoanResponseDto;
+import com.anurpeljto.gateway.dto.loan.LoanResponsePagedDTO;
 import com.anurpeljto.gateway.exceptions.InvalidReceiptException;
 import com.anurpeljto.gateway.model.LoanStatus;
 import com.anurpeljto.gateway.model.SubsidyStatus;
@@ -21,12 +22,15 @@ import com.anurpeljto.gateway.services.SubsidyService;
 import com.anurpeljto.gateway.services.UserService;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.client.RestTemplate;
@@ -63,17 +67,14 @@ public class GraphQLController {
 //    Loans and loan related methods
 
     @QueryMapping
-    public List<Loan> listLoans(
+    public LoanResponsePagedDTO getLoans(
             @Argument("page") final Integer page,
             @Argument("size") final Integer size,
             @Argument("filterBy") final String filterBy,
             @Argument("sortBy") final String sortBy
             ) {
 
-        String requestUrl = String.format("%s/list?page=%d&size=%d&orderBy=%s&sortBy=%s", loanServiceUrl, page, size, filterBy, sortBy);
-        ResponseEntity<List> response = restTemplate.getForEntity(requestUrl, List.class);
-
-        return response.getBody();
+        return loanService.getLoans(page, size, filterBy, sortBy);
     }
 
     @QueryMapping
@@ -128,6 +129,26 @@ public class GraphQLController {
             @Argument("sortBy") final String sortBy
     ) {
         return loanService.getLoansByUserId(id, page, size, filterBy, sortBy);
+    }
+
+    @QueryMapping
+    public Long getTotalLoans(){
+        return loanService.getTotalLoans();
+    }
+
+    @QueryMapping
+    public Long getPendingLoans(){
+        return loanService.getPendingLoans();
+    }
+
+    @QueryMapping
+    public Long getLoansThisWeek(){
+        return loanService.getLoansThisWeek();
+    }
+
+    @QueryMapping
+    public Double getLoanAverageAmount(){
+        return loanService.getAverageLoanAmount();
     }
 
 //    Receipts and receipt related methods

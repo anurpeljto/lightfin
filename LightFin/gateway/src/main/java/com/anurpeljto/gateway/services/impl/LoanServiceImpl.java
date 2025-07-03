@@ -2,11 +2,13 @@ package com.anurpeljto.gateway.services.impl;
 
 import com.anurpeljto.gateway.domain.loan.Loan;
 import com.anurpeljto.gateway.dto.loan.LoanResponseDto;
+import com.anurpeljto.gateway.dto.loan.LoanResponsePagedDTO;
 import com.anurpeljto.gateway.services.LoanService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,13 @@ public class LoanServiceImpl implements LoanService {
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
+    }
+
+    @Override
+    public LoanResponsePagedDTO getLoans(Integer page, Integer size, String filterBy, String sortBy){
+        String url = String.format("%s/list?page=%d&size=%d&sortBy=%s&sortDirection=%s", loanServiceUrl, page, size, filterBy, sortBy);
+        ResponseEntity<LoanResponsePagedDTO> response = restTemplate.getForEntity(url, LoanResponsePagedDTO.class);
+        return response.getBody();
     }
 
     @Override
@@ -66,6 +75,34 @@ public class LoanServiceImpl implements LoanService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Long getTotalLoans() {
+        String url = String.format("%s/loans/total", loanServiceUrl);
+        Long total = restTemplate.getForEntity(url, Long.class).getBody();
+        return total;
+    }
+
+    @Override
+    public Long getLoansThisWeek() {
+        String url = String.format("%s/loans/week", loanServiceUrl);
+        Long total = restTemplate.getForEntity(url, Long.class).getBody();
+        return total;
+    }
+
+    @Override
+    public Long getPendingLoans() {
+        String url = String.format("%s/loans/pending", loanServiceUrl);
+        Long total = restTemplate.getForEntity(url, Long.class).getBody();
+        return total;
+    }
+
+    @Override
+    public Double getAverageLoanAmount() {
+        String url = String.format("%s/loans/average", loanServiceUrl);
+        Double total = restTemplate.getForEntity(url, Double.class).getBody();
+        return total;
     }
 
     @Override

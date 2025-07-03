@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.ByteArrayOutputStream;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,8 +85,8 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public List<Loan> getLoans(Pageable pageable) {
-        return this.loanRepository.findAll(pageable).getContent();
+    public Page<Loan> getLoans(Pageable pageable) {
+        return this.loanRepository.findAll(pageable);
     }
 
     @Override
@@ -101,7 +102,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public byte[] generateLoanReport(Integer id, String first_name, String last_name, String email){
-        List<Loan> loans = this.getLoans(PageRequest.of(0, 1000));
+        List<Loan> loans = getLoansByUserId(id, PageRequest.of(0, 1000)).getContent();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Document document = new Document();
         PdfWriter.getInstance(document, out);
@@ -127,5 +128,27 @@ public class LoanServiceImpl implements LoanService {
         document.close();
 
         return out.toByteArray();
+    }
+
+    @Override
+    public Long getTotalLoans() {
+        return loanRepository.count();
+    }
+
+    @Override
+    public Long getLoansThisWeek() {
+        OffsetDateTime today = OffsetDateTime.now();
+        OffsetDateTime startOfWeek = today.minusDays(7);
+        return loanRepository.getLoansThisWeek(startOfWeek, today);
+    }
+
+    @Override
+    public Long getPendingLoans() {
+        return loanRepository.getPendingLoans(LoanStatus.PENDING);
+    }
+
+    @Override
+    public Double getAverageLoanAmount(){
+        return loanRepository.getAverageLoanAmount();
     }
 }
