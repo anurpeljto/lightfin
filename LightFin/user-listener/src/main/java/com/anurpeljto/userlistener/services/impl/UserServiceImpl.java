@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,13 +16,16 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final PasswordEncoder passwordEncoder;
+
     private final UserRepository userRepository;
 
     private final JavaMailSender mailSender;
 
-    public UserServiceImpl(UserRepository userRepository, JavaMailSender mailSender) {
+    public UserServiceImpl(UserRepository userRepository, JavaMailSender mailSender, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.mailSender = mailSender;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void sendEmail(String toEmail, String activationLink){
@@ -41,6 +45,8 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("User already exists");
         }
         User saved = userRepository.save(user);
+        String hashPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashPassword);
         sendEmail(user.getEmail(), user.getEmailToken());
         return saved;
     }
@@ -59,6 +65,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Integer id){
         return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     @Override

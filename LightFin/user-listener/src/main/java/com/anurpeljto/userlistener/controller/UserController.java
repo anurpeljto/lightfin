@@ -30,4 +30,11 @@ public class UserController {
             ) {
         return userService.getAllUsers(PageRequest.of(page, size)).getContent();
     }
+
+    @GetMapping(path = "/user/email/{email}")
+    public User getUserByEmail(
+            @PathVariable("email") String email
+    ){
+        return userService.getUserByEmail(email);
+    }
 }

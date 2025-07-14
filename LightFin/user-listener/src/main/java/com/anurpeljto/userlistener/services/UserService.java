@@ -15,4 +15,6 @@ public interface UserService {
     User getUserById(Integer id);
 
     Page<User> getAllUsers(Pageable pageable);
+
+    User getUserByEmail(String email);
 }
