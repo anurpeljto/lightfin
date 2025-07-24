@@ -186,9 +186,10 @@ public class GraphQLController {
             @Argument("page") final Integer page,
             @Argument("size") final Integer size,
             @Argument("filterBy") final String filterBy,
-            @Argument("sortBy") final String sortBy
+            @Argument("sortBy") final String sortBy,
+            @Argument("tenantId") final Integer tenantId
     ) {
-        return fiscalizationService.getFiscalizedThisWeek(page, size, filterBy, sortBy);
+        return fiscalizationService.getFiscalizedThisWeek(page, size, filterBy, sortBy, tenantId);
     }
 
     @QueryMapping
@@ -196,9 +197,10 @@ public class GraphQLController {
             @Argument("page") final Integer page,
             @Argument("size") final Integer size,
             @Argument("filterBy") final String filterBy,
-            @Argument("sortBy") final String sortBy
+            @Argument("sortBy") final String sortBy,
+            @Argument("tenantId") final Integer tenantId
     ) {
-        return fiscalizationService.getPendingThisWeek(page, size, filterBy, sortBy);
+        return fiscalizationService.getPendingThisWeek(page, size, filterBy, sortBy, tenantId);
     }
 
     @QueryMapping
@@ -206,9 +208,10 @@ public class GraphQLController {
             @Argument("page") final Integer page,
             @Argument("size") final Integer size,
             @Argument("filterBy") final String filterBy,
-            @Argument("sortBy") final String sortBy
+            @Argument("sortBy") final String sortBy,
+            @Argument("tenantId") final Integer tenantId
     ) {
-        return fiscalizationService.getCancelledThisWeek(page, size, filterBy, sortBy);
+        return fiscalizationService.getCancelledThisWeek(page, size, filterBy, sortBy, tenantId);
     }
 
     @QueryMapping
@@ -216,9 +219,10 @@ public class GraphQLController {
             @Argument("page") final Integer page,
             @Argument("size") final Integer size,
             @Argument("filterBy") final String filterBy,
-            @Argument("sortBy") final String sortBy
+            @Argument("sortBy") final String sortBy,
+            @Argument("tenantId") final Integer tenantId
     ) {
-        return fiscalizationService.getTodaysTransactions(page, size, filterBy, sortBy);
+        return fiscalizationService.getTodaysTransactions(page, size, filterBy, sortBy, tenantId);
     }
 
     @QueryMapping
@@ -237,8 +241,10 @@ public class GraphQLController {
     }
 
     @QueryMapping
-    public WeeklyByTypeDTO getWeeklyByType() {
-        return fiscalizationService.getWeeklyByType();
+    public WeeklyByTypeDTO getWeeklyByType(
+            @Argument("tenantId") final Integer tenantId
+    ) {
+        return fiscalizationService.getWeeklyByType(tenantId);
     }
 
     @QueryMapping
@@ -281,6 +287,14 @@ public class GraphQLController {
             @Argument("id") final Integer id
     ) {
         return userService.getUserById(id);
+    }
+
+    @MutationMapping
+    public User updateUser (
+            @Argument("user") final User user
+    ) {
+        userService.updateUser(user);
+        return user;
     }
 
     @QueryMapping

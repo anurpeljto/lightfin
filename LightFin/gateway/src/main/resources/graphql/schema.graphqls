@@ -10,11 +10,11 @@ type Query {
 
     listReceipts(page: Int=1, size: Int=20, filterBy: String, sortBy: String): ReceiptPage
     getReceiptById(id: ID!): Receipt
-    getFiscalizedThisWeek(page: Int=1, size: Int=20, filterBy: String, sortBy: String): ReceiptPage
-    getPendingThisWeek(page: Int=1, size: Int=20, filterBy: String, sortBy: String): ReceiptPage
-    getCancelledThisWeek(page: Int=1, size: Int=20, filterBy: String, sortBy: String): ReceiptPage
-    getTodaysTransactions(page: Int=1, size: Int=20, filterBy: String, sortBy: String): TodayResponse
-    getWeeklyByType: WeeklyByTypeResponse
+    getFiscalizedThisWeek(page: Int=1, size: Int=20, filterBy: String, sortBy: String, tenantId: Int): ReceiptPage
+    getPendingThisWeek(page: Int=1, size: Int=20, filterBy: String, sortBy: String, tenantId: Int): ReceiptPage
+    getCancelledThisWeek(page: Int=1, size: Int=20, filterBy: String, sortBy: String, tenantId: Int): ReceiptPage
+    getTodaysTransactions(page: Int=1, size: Int=20, filterBy: String, sortBy: String, tenantId: Int): TodayResponse
+    getWeeklyByType(tenantId: Int): WeeklyByTypeResponse
     getLatestReceipts: [Receipt]
     getTodaysTransactionsCount: Int
     getWeeklyTransactionsCount: Int
@@ -38,6 +38,7 @@ type Mutation {
 
     publishReceipt(receipt: ReceiptInput): Receipt
     publishUser(user: UserInput): User
+    updateUser(user: UserInput): User
 
     publishSubsidy(subsidy: SubsidyInput): Subsidy
     approveSubsidy(id: ID!): Subsidy
@@ -66,12 +67,12 @@ type User {
 
 input UserInput {
     id: ID
-    first_name: String!
-    last_name: String!
-    email: String!
+    first_name: String
+    last_name: String
+    email: String
     emailToken: String
     emailVerified: Boolean
-    password: String!
+    password: String
     passwordToken: String
 }
 

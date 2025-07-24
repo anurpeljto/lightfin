@@ -16,15 +16,15 @@ public interface FiscalizationService {
 
     Receipt getReceiptById(Integer id);
 
-    ReceiptResponse getFiscalizedThisWeek(Integer page, Integer size, String filterBy, String sortBy);
+    ReceiptResponse getFiscalizedThisWeek(Integer page, Integer size, String filterBy, String sortBy, Integer tenantId);
 
-    ReceiptResponse getPendingThisWeek(Integer page, Integer size, String filterBy, String sortBy);
+    ReceiptResponse getPendingThisWeek(Integer page, Integer size, String filterBy, String sortBy, Integer tenantId);
 
-    ReceiptResponse getCancelledThisWeek(Integer page, Integer size, String filterBy, String sortBy);
+    ReceiptResponse getCancelledThisWeek(Integer page, Integer size, String filterBy, String sortBy, Integer tenantId);
 
-    TodayDTOList getTodaysTransactions(Integer page, Integer size, String filterBy, String sortBy);
+    TodayDTOList getTodaysTransactions(Integer page, Integer size, String filterBy, String sortBy, Integer tenantId);
 
-    WeeklyByTypeDTO getWeeklyByType();
+    WeeklyByTypeDTO getWeeklyByType(Integer tenantId);
 
     Integer getTodaysTransactionsCount();
 

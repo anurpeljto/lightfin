@@ -79,7 +79,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(User user) {
-        userRepository.save(user);
+        try{
+            String payload = objectMapper.writeValueAsString(user);
+            kafkaTemplate.send("user.update", payload);
+        } catch(JsonProcessingException e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

@@ -40,4 +40,6 @@ public class Receipt {
     private String status;
 
     private Double taxAmount;
+
+    private Integer tenant_id;
 }

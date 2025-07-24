@@ -77,31 +77,31 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public Page<Receipt> fiscalizedReceiptsThisWeek(Pageable pageable) {
+    public Page<Receipt> fiscalizedReceiptsThisWeek(Pageable pageable, Integer tenantId) {
         OffsetDateTime today = OffsetDateTime.now();
         OffsetDateTime startOfWeek = today.minusDays(7);
-        Page<Receipt> receipts = this.fiscalizationRepository.findFiscalizedByThisWeek(startOfWeek, today, pageable);
+        Page<Receipt> receipts = this.fiscalizationRepository.findFiscalizedByThisWeek(startOfWeek, today, tenantId, pageable);
         return receipts;
     }
 
     @Override
-    public Page<Receipt> pendingReceiptsThisWeek(Pageable pageable) {
+    public Page<Receipt> pendingReceiptsThisWeek(Pageable pageable, Integer tenantId) {
         OffsetDateTime today = OffsetDateTime.now();
         OffsetDateTime startOfWeek = today.minusDays(7);
-        Page<Receipt> receipts = this.fiscalizationRepository.findPendingByThisWeek(startOfWeek, today, pageable);
+        Page<Receipt> receipts = this.fiscalizationRepository.findPendingByThisWeek(startOfWeek, today, tenantId, pageable);
         return receipts;
     }
 
     @Override
-    public Page<Receipt> cancelledReceiptsThisWeek(Pageable pageable) {
+    public Page<Receipt> cancelledReceiptsThisWeek(Pageable pageable, Integer tenantId) {
         OffsetDateTime today = OffsetDateTime.now();
         OffsetDateTime startOfWeek = today.minusDays(7);
-        Page<Receipt> receipts = this.fiscalizationRepository.findCancelledByThisWeek(startOfWeek, today, pageable);
+        Page<Receipt> receipts = this.fiscalizationRepository.findCancelledByThisWeek(startOfWeek, today, tenantId, pageable);
         return receipts;
     }
 
     @Override
-    public TodayDTOList getTodaysTransactions() {
+    public TodayDTOList getTodaysTransactions(Integer tenantId) {
         ZoneOffset offset = OffsetDateTime.now().getOffset();
 
         OffsetDateTime now = OffsetDateTime.now();
@@ -110,17 +110,17 @@ public class FiscalizationServiceImpl implements FiscalizationService {
         OffsetDateTime startOfDay = today.atStartOfDay().atOffset(offset);
         OffsetDateTime endOfDay = today.plusDays(1).atStartOfDay().atOffset(offset);
 
-        List<TodayDTO> receipts = this.fiscalizationRepository.todaysTransactions(startOfDay, endOfDay);
+        List<TodayDTO> receipts = this.fiscalizationRepository.todaysTransactions(startOfDay, endOfDay, tenantId);
         log.info("Total receipts {}", receipts.size());
         return new TodayDTOList(receipts);
     }
 
     @Override
-    public WeeklyByTypeDTO getWeeklyByType() {
+    public WeeklyByTypeDTO getWeeklyByType(Integer tenantId) {
         OffsetDateTime today = OffsetDateTime.now();
         OffsetDateTime startOfWeek = today.minusDays(7);
 
-        List<WeeklyByType> weeklyData = this.fiscalizationRepository.weeklyByType(startOfWeek, today);
+        List<WeeklyByType> weeklyData = this.fiscalizationRepository.weeklyByType(startOfWeek, today, tenantId);
         return new WeeklyByTypeDTO(weeklyData);
     }
 

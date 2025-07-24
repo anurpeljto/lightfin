@@ -21,15 +21,15 @@ public interface FiscalizationService {
 
     Receipt getReceipt(Integer id);
 
-    Page<Receipt> fiscalizedReceiptsThisWeek(Pageable pageable);
+    Page<Receipt> fiscalizedReceiptsThisWeek(Pageable pageable, Integer tenantId);
 
-    Page<Receipt> pendingReceiptsThisWeek(Pageable pageable);
+    Page<Receipt> pendingReceiptsThisWeek(Pageable pageable, Integer tenantId);
 
-    Page<Receipt> cancelledReceiptsThisWeek(Pageable pageable);
+    Page<Receipt> cancelledReceiptsThisWeek(Pageable pageable, Integer tenantId);
 
-    TodayDTOList getTodaysTransactions();
+    TodayDTOList getTodaysTransactions(Integer tenantId);
 
-    WeeklyByTypeDTO getWeeklyByType();
+    WeeklyByTypeDTO getWeeklyByType(Integer tenantId);
 
     Integer todaysTransactionsCount();
 

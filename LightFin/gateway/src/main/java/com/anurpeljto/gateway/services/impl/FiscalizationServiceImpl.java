@@ -106,9 +106,9 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public ReceiptResponse getFiscalizedThisWeek(Integer page, Integer size, String filterBy, String sortBy) {
+    public ReceiptResponse getFiscalizedThisWeek(Integer page, Integer size, String filterBy, String sortBy, Integer tenantId) {
         try{
-            String requestUrl = String.format("%s/fiscalized/week?page=%d&size=%d&filterBy=%s&sortBy=%s", fiscalizationUrl, page, size, filterBy, sortBy);
+            String requestUrl = String.format("%s/fiscalized/week?page=%d&size=%d&filterBy=%s&sortBy=%s&tenantId=%d", fiscalizationUrl, page, size, filterBy, sortBy, tenantId);
             log.info("Fiscalized this week");
             ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
             return response.getBody();
@@ -118,9 +118,9 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public ReceiptResponse getPendingThisWeek(Integer page, Integer size, String filterBy, String sortBy) {
+    public ReceiptResponse getPendingThisWeek(Integer page, Integer size, String filterBy, String sortBy, Integer tenantId) {
         try{
-            String requestUrl = String.format("%s/pending/week?page=%d&size=%d&filterBy=%s&sortBy=%s", fiscalizationUrl, page, size, filterBy, sortBy);
+            String requestUrl = String.format("%s/pending/week?page=%d&size=%d&filterBy=%s&sortBy=%s&tenantId=%d", fiscalizationUrl, page, size, filterBy, sortBy, tenantId);
             ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
             return response.getBody();
         } catch(HttpServerErrorException.InternalServerError e){
@@ -129,9 +129,9 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public ReceiptResponse getCancelledThisWeek(Integer page, Integer size, String filterBy, String sortBy) {
+    public ReceiptResponse getCancelledThisWeek(Integer page, Integer size, String filterBy, String sortBy, Integer tenantId) {
         try{
-            String requestUrl = String.format("%s/cancelled/week?page=%d&size=%d&filterBy=%s&sortBy=%s", fiscalizationUrl, page, size, filterBy, sortBy);
+            String requestUrl = String.format("%s/cancelled/week?page=%d&size=%d&filterBy=%s&sortBy=%s&tenantId=%d", fiscalizationUrl, page, size, filterBy, sortBy, tenantId);
             ResponseEntity<ReceiptResponse> response = restTemplate.getForEntity(requestUrl, ReceiptResponse.class);
             return response.getBody();
         } catch(HttpServerErrorException.InternalServerError e){
@@ -140,9 +140,9 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public TodayDTOList getTodaysTransactions(Integer page, Integer size, String filterBy, String sortBy) {
+    public TodayDTOList getTodaysTransactions(Integer page, Integer size, String filterBy, String sortBy, Integer tenantId) {
         try{
-            String requestUrl = String.format("%s/today?page=%d&size=%d&sortBy=%s&orderBy=%s", fiscalizationUrl, page, size, filterBy, sortBy);
+            String requestUrl = String.format("%s/today?page=%d&size=%d&sortBy=%s&orderBy=%s&tenantId=%d", fiscalizationUrl, page, size, filterBy, sortBy, tenantId);
             ResponseEntity<TodayDTOList> response = restTemplate.getForEntity(requestUrl, TodayDTOList.class);
             String value = objectMapper.writeValueAsString(response.getBody());
             log.info("Today transactions: {}", value);
@@ -155,8 +155,8 @@ public class FiscalizationServiceImpl implements FiscalizationService {
     }
 
     @Override
-    public WeeklyByTypeDTO getWeeklyByType() {
-        String requestUrl = String.format("%s/type/week", fiscalizationUrl);
+    public WeeklyByTypeDTO getWeeklyByType(Integer tenantId) {
+        String requestUrl = String.format("%s/type/week?tenantId=%d", fiscalizationUrl, tenantId);
         ResponseEntity<WeeklyByTypeDTO> response = restTemplate.getForEntity(requestUrl, WeeklyByTypeDTO.class);
         return response.getBody();
     }

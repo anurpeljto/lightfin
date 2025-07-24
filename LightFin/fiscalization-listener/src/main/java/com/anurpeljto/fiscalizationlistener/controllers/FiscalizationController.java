@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,10 +59,11 @@ public class FiscalizationController {
             @RequestParam(required = false) final Integer page,
             @RequestParam(required = false) final Integer size,
             @RequestParam(required = false) final String filterBy,
-            @RequestParam(required = false) final String sortBy
+            @RequestParam(required = false) final String sortBy,
+            @RequestParam(required = false) final Integer tenantId
     ){
         Pageable pageable = PageableCreator.createPageable(page, size, filterBy, sortBy);
-        Page<Receipt> receipts = fiscalizationService.fiscalizedReceiptsThisWeek(pageable);
+        Page<Receipt> receipts = fiscalizationService.fiscalizedReceiptsThisWeek(pageable, tenantId);
         return new ReceiptResponseDTO(receipts);
     }
 
@@ -70,10 +72,11 @@ public class FiscalizationController {
             @RequestParam(required = false) final Integer page,
             @RequestParam(required = false) final Integer size,
             @RequestParam(required = false) final String filterBy,
-            @RequestParam(required = false) final String sortBy
+            @RequestParam(required = false) final String sortBy,
+            @RequestParam(required = false) final Integer tenantId
     ){
         Pageable pageable = PageableCreator.createPageable(page, size, filterBy, sortBy);
-        Page<Receipt> receipts = fiscalizationService.pendingReceiptsThisWeek(pageable);
+        Page<Receipt> receipts = fiscalizationService.pendingReceiptsThisWeek(pageable, tenantId);
         return new ReceiptResponseDTO(receipts);
     }
 
@@ -82,10 +85,11 @@ public class FiscalizationController {
             @RequestParam(required = false) final Integer page,
             @RequestParam(required = false) final Integer size,
             @RequestParam(required = false) final String filterBy,
-            @RequestParam(required = false) final String sortBy
+            @RequestParam(required = false) final String sortBy,
+            @RequestParam(required = false) final Integer tenantId
     ){
         Pageable pageable = PageableCreator.createPageable(page, size, filterBy, sortBy);
-        Page<Receipt> receipts = fiscalizationService.cancelledReceiptsThisWeek(pageable);
+        Page<Receipt> receipts = fiscalizationService.cancelledReceiptsThisWeek(pageable, tenantId);
         return new ReceiptResponseDTO(receipts);
     }
 
@@ -105,15 +109,19 @@ public class FiscalizationController {
     }
 
     @GetMapping(path = "/today")
-    public TodayDTOList getTodayReceipts(){
-        TodayDTOList receipts = fiscalizationService.getTodaysTransactions();
+    public TodayDTOList getTodayReceipts(
+            @RequestParam(required = false) final Integer tenantId
+    ){
+        TodayDTOList receipts = fiscalizationService.getTodaysTransactions(tenantId);
 //        TodayDTOList receiptList = new TodayDTOList(receipts);
         return receipts;
     }
 
     @GetMapping(path = "/type/week")
-    public WeeklyByTypeDTO getWeeklyReceipts(){
-        return this.fiscalizationService.getWeeklyByType();
+    public WeeklyByTypeDTO getWeeklyReceipts(
+            @RequestParam(required = false) Integer tenantId
+    ){
+        return this.fiscalizationService.getWeeklyByType(tenantId);
     }
 
     @GetMapping(path = "/today/count")

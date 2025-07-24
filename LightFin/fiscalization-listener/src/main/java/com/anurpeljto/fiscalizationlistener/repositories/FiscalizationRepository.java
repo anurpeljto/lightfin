@@ -17,37 +17,41 @@ import java.util.List;
 
 public interface FiscalizationRepository extends JpaRepository<Receipt, Integer> {
 
-    @Query("SELECT r FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek AND r.status = 'FISCALIZED' order by r.timestamp")
+    @Query("SELECT r FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek AND r.status = 'FISCALIZED' AND r.tenant_id = :tenantId order by r.timestamp")
     Page<Receipt> findFiscalizedByThisWeek(
             @Param("startOfWeek") OffsetDateTime startOfWeek,
             @Param("endOfWeek") OffsetDateTime endOfWeek,
+            @Param("tenantId") Integer tenantId,
             Pageable pageable
     );
 
-    @Query("SELECT r FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek AND r.status = 'PENDING' order by r.timestamp")
+    @Query("SELECT r FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek AND r.status = 'PENDING' AND r.tenant_id = :tenantId order by r.timestamp")
     Page<Receipt> findPendingByThisWeek(
             @Param("startOfWeek") OffsetDateTime startOfWeek,
             @Param("endOfWeek") OffsetDateTime endOfWeek,
+            @Param("tenantId") Integer tenantId,
             Pageable pageable
     );
 
-    @Query("SELECT r FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek AND r.status = 'CANCELLED' order by r.timestamp")
+    @Query("SELECT r FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek AND r.status = 'CANCELLED' AND r.tenant_id = :tenantId order by r.timestamp")
     Page<Receipt> findCancelledByThisWeek(
             @Param("startOfWeek") OffsetDateTime startOfWeek,
             @Param("endOfWeek") OffsetDateTime endOfWeek,
+            @Param("tenantId") Integer tenantId,
             Pageable pageable
     );
 
     @Query("""
     SELECT new com.anurpeljto.fiscalizationlistener.dto.TodayDTO(r.status, COUNT(r))
     FROM Receipt r
-    WHERE r.timestamp BETWEEN :startOfDay AND :endOfDay
+    WHERE r.tenant_id = :tenantId AND r.timestamp BETWEEN :startOfDay AND :endOfDay
     GROUP BY r.status
     ORDER BY r.status
 """)
     List<TodayDTO> todaysTransactions(
             @Param("startOfDay") OffsetDateTime startOfDay,
-            @Param("endOfDay") OffsetDateTime endOfDay
+            @Param("endOfDay") OffsetDateTime endOfDay,
+            @Param("tenantId") Integer tenantId
     );
 
     @Query("SELECT COUNT(r) FROM Receipt r WHERE r.timestamp BETWEEN :startOfDay AND :endOfDay")
@@ -58,11 +62,12 @@ public interface FiscalizationRepository extends JpaRepository<Receipt, Integer>
 
     @Query("SELECT new com.anurpeljto.fiscalizationlistener.domain.WeeklyByType(r.paymentType, COUNT(r)) " +
             "FROM Receipt r " +
-            "WHERE r.timestamp BETWEEN :startOfWeek AND :today " +
+            "WHERE r.tenant_id = :tenantId AND r.timestamp BETWEEN :startOfWeek AND :today " +
             "GROUP BY r.paymentType")
     List<WeeklyByType> weeklyByType(
             @Param("startOfWeek") OffsetDateTime startOfWeek,
-            @Param("today") OffsetDateTime today
+            @Param("today") OffsetDateTime today,
+            @Param("tenantId") Integer tenantId
     );
 
     @Query("SELECT COUNT(r) FROM Receipt r WHERE r.timestamp BETWEEN :startOfWeek AND :endOfWeek")
